@@ -3,9 +3,22 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useCotizaciones } from '../context/CotizacionesContext.jsx'
 import { fmt } from '../data/cotizaciones.js'
-import { FileText, LayoutDashboard, ShoppingBag, UserCog, Search, Bell, ChevronDown, Plus, Minus, Trash2, X, CircleHelp, LogOut, CheckCircle2 } from 'lucide-react'
+import { FileText, LayoutDashboard, ShoppingBag, UserCog, Search, Bell, ChevronDown, Plus, Minus, Trash2, X, CircleHelp, LogOut, CheckCircle2, Inbox, FilePen, Users, BarChart3 } from 'lucide-react'
 
 const iniciales = (n) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()
+const navComprador = [
+  { label: 'Dashboard', icon: LayoutDashboard, to: '/dashboard' },
+  { label: 'Catálogo', icon: ShoppingBag, to: '/catalogo' },
+  { label: 'Mis Cotizaciones', icon: FileText, to: '/cotizaciones' },
+  { label: 'Perfil', icon: UserCog, to: '/perfil' },
+]
+const navAsesor = [
+  { label: 'Dashboard', icon: LayoutDashboard, to: '/asesor', end: true },
+  { label: 'Bandeja de Solicitudes', icon: Inbox, to: '/asesor/solicitudes' },
+  { label: 'Editor/Cotizaciones', icon: FilePen, to: '/asesor/cotizaciones' },
+  { label: 'Mis Clientes', icon: Users, to: '/asesor/clientes' },
+  { label: 'Reportes de Ventas', icon: BarChart3, to: '/asesor/reportes' },
+]
 const notificaciones = [
   'Tu proveedor Dell respondió la cotización COT-00125.',
   'Nuevo producto homologado: Cisco Catalyst 9200L.',
@@ -13,13 +26,13 @@ const notificaciones = [
 
 export default function Layout() {
   const { user, logout } = useAuth()
-  const { esAdmin, cotizaciones, busqueda, setBusqueda, count, total, lineas, cartOpen, setCartOpen, cambiarQty, quitar, enviar, toast, avisar } = useCotizaciones()
+  const { esAsesor, solicitudes, busqueda, setBusqueda, count, total, lineas, cartOpen, setCartOpen, cambiarQty, quitar, enviar, toast } = useCotizaciones()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [menu, setMenu] = useState(null)
-  const pendientes = cotizaciones.filter((c) => c.estado === 'Pendiente').length
-  const avisos = esAdmin
-    ? [pendientes ? `Tienes ${pendientes} ${pendientes === 1 ? 'cotización pendiente' : 'cotizaciones pendientes'} por revisar.` : 'No tienes cotizaciones pendientes.']
+  const porCotizar = solicitudes.filter((s) => s.estado === 'Por Cotizar').length
+  const avisos = esAsesor
+    ? [porCotizar ? `Tienes ${porCotizar} ${porCotizar === 1 ? 'solicitud' : 'solicitudes'} por cotizar en la bandeja.` : 'No tienes solicitudes por cotizar.']
     : notificaciones
 
   const buscar = (v) => {
@@ -31,14 +44,7 @@ export default function Layout() {
     if (folio) navigate(`/cotizaciones/${folio}`)
   }
 
-  const nav = [
-    { label: 'Dashboard', icon: LayoutDashboard, soon: true },
-    { label: 'Catálogo', icon: ShoppingBag, to: '/catalogo' },
-    { label: 'Mis Cotizaciones', icon: FileText, to: '/cotizaciones' },
-    { label: 'Perfil', icon: UserCog, soon: true },
-  ]
-    .filter((n) => !(esAdmin && n.to === '/catalogo'))
-    .map((n) => (esAdmin && n.to === '/cotizaciones' ? { ...n, label: 'Cotizaciones' } : n))
+  const nav = esAsesor ? navAsesor : navComprador
   const base = 'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-medium'
 
   return (
@@ -48,20 +54,14 @@ export default function Layout() {
           <div className="flex items-center gap-2.5">
             <div className="grid size-8 place-items-center rounded-lg bg-brand text-white"><FileText size={18} /></div>
             <span className="font-display text-xl font-bold text-white">CotizaTech</span>
-            <span className="rounded bg-white/10 px-1.5 text-[9px] font-bold text-slate-200">ENT</span>
+            <span className="rounded bg-white/10 px-1.5 text-[9px] font-bold text-slate-200">{esAsesor ? 'ASESOR' : 'ENT'}</span>
           </div>
           <nav className="mt-9 space-y-1">
-            {nav.map(({ label, icon: Icon, to, soon }) =>
-              soon ? (
-                <button key={label} onClick={() => avisar(`${label} estará disponible próximamente`)} className={`${base} hover:bg-white/5`}>
-                  <Icon size={15} /> {label}
-                </button>
-              ) : (
-                <NavLink key={label} to={to} className={({ isActive }) => `${base} ${isActive ? 'bg-white/10 text-white' : 'hover:bg-white/5'}`}>
-                  <Icon size={15} /> {label}
-                </NavLink>
-              )
-            )}
+            {nav.map(({ label, icon: Icon, to, end }) => (
+              <NavLink key={label} to={to} end={end} className={({ isActive }) => `${base} ${isActive ? 'bg-white/10 text-white' : 'hover:bg-white/5'}`}>
+                <Icon size={15} /> {label}
+              </NavLink>
+            ))}
           </nav>
         </div>
         <div className="text-[11px] text-slate-400">
@@ -72,7 +72,7 @@ export default function Layout() {
 
       <main className="min-w-0 flex-1 bg-slate-50 px-8 py-6">
         <header className="flex items-center justify-between border-b border-slate-200 pb-5 print:hidden">
-          <div className={`${esAdmin ? 'hidden' : 'flex'} h-9 w-[358px] items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 focus-within:border-brand`}>
+          <div className={`${esAsesor ? 'hidden' : 'flex'} h-9 w-[358px] items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 focus-within:border-brand`}>
             <Search size={14} className="text-slate-500" />
             <input value={busqueda} onChange={(e) => buscar(e.target.value)} placeholder="Buscar hardware, software, servicios..." className="w-full text-xs outline-none placeholder:text-slate-400" />
             {busqueda && <button onClick={() => setBusqueda('')} aria-label="Borrar búsqueda"><X size={13} className="text-slate-400" /></button>}
@@ -111,7 +111,7 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      {cartOpen && !esAdmin && (
+      {cartOpen && !esAsesor && (
         <div className="fixed inset-0 z-30 flex justify-end bg-slate-900/40" onClick={() => setCartOpen(false)}>
           <aside className="flex h-full w-full max-w-sm flex-col bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">

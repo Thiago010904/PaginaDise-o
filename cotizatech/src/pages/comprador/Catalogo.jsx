@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useCotizaciones } from '../context/CotizacionesContext.jsx'
-import { productos } from '../data/productos.js'
-import { fmt } from '../data/cotizaciones.js'
+import { useCotizaciones } from '../../context/CotizacionesContext.jsx'
+import { productos } from '../../data/productos.js'
+import { fmt } from '../../data/cotizaciones.js'
 import { ShoppingCart, Plus, PackageSearch } from 'lucide-react'
 
 const tabs = ['Hardware', 'Software', 'Servicios']
