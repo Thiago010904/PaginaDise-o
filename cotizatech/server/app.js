@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url'
 import { config } from './config.js'
 import { noEncontrada, manejarErrores } from './middleware/errores.js'
 import auth from './routes/auth.js'
+import productos from './routes/productos.js'
+import carrito from './routes/carrito.js'
 
 export function crearApp() {
   const app = express()
@@ -25,6 +27,8 @@ export function crearApp() {
 
   app.get('/api/health', (_req, res) => res.json({ ok: true }))
   app.use('/api/auth', auth)
+  app.use('/api/productos', productos)
+  app.use('/api/carrito', carrito)
   app.use('/api', noEncontrada)
 
   // En producción el mismo servidor entrega el front compilado (npm run build)
