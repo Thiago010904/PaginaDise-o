@@ -1,0 +1,42 @@
+@startuml
+title CotizaTech - Diagrama UML de Componentes
+left to right direction
+skinparam componentStyle uml2
+skinparam shadowing false
+
+package "Frontend - React / Vite" {
+  component "Interfaz Comprador\n(Catalogo, Cotizaciones,\nCotizacionDetalle)" as Comprador
+  component "Interfaz Asesor\n(BandejaSolicitudes,\nEditorCotizacion)" as Asesor
+  component "AuthContext" as Auth
+  component "CotizacionesContext" as Cotizaciones
+}
+
+package "Datos actuales" {
+  component "Productos y usuarios\n(Datos JS en memoria)" as Datos
+  component "Cotizaciones y solicitudes\n(Datos JS en memoria)" as Memoria
+}
+
+package "Arquitectura proyectada - Entregable 3" #FFF3DB {
+  component "Servicio de cotizaciones\n(Cliente HTTP)" as Servicio
+  component "Backend / API REST" as API
+  database "Base de datos" as BD
+}
+
+Comprador --> Auth : Autenticacion
+Comprador --> Cotizaciones : Consultar / solicitar
+Asesor --> Auth : Verificar rol
+Asesor --> Cotizaciones : Gestionar / cotizar
+
+Auth --> Datos : Lee usuarios
+Cotizaciones --> Memoria : Administra datos
+
+Cotizaciones ..> Servicio : Integracion propuesta
+Servicio ..> API : HTTP / JSON
+API ..> BD : Persistencia
+
+note bottom of API
+  Componente proyectado.
+  Confirmar implementacion
+  con el equipo antes de entregar.
+end note
+@enduml
