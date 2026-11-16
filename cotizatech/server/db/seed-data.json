@@ -1,0 +1,1638 @@
+{
+  "config": {
+    "trm": 4000,
+    "iva_pct": 19,
+    "limite_descuento_pct": 15,
+    "notas_default": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+  },
+  "productos": [
+    {
+      "id": 1,
+      "tipo": "Hardware",
+      "subcategoria": "Computadoras",
+      "marca": "Lenovo",
+      "nombre": "ThinkPad L14 Gen 4",
+      "descripcion": "AMD Ryzen 5 PRO, 16GB RAM, 512GB SSD, Pantalla 14\" FHD, Windows 11 Pro",
+      "precio_usd": 899,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "Laptop"
+    },
+    {
+      "id": 2,
+      "tipo": "Hardware",
+      "subcategoria": "Servidores",
+      "marca": "HPE",
+      "nombre": "Servidor HPE ProLiant DL380",
+      "descripcion": "Intel Xeon Silver 4314, 32GB RAM, Sin discos, Controladora Smart Array",
+      "precio_usd": 2450,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "Database"
+    },
+    {
+      "id": 3,
+      "tipo": "Hardware",
+      "subcategoria": "Monitores",
+      "marca": "Dell Technologies",
+      "nombre": "Monitor Dell UltraSharp 27\"",
+      "descripcion": "Resolución 4K UHD, Panel IPS, Cobertura 99% sRGB, Conectividad USB-C",
+      "precio_usd": 420,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "Monitor"
+    },
+    {
+      "id": 4,
+      "tipo": "Hardware",
+      "subcategoria": "Redes / Switches",
+      "marca": "Cisco Systems",
+      "nombre": "Cisco Catalyst 9200L",
+      "descripcion": "Switch Gestionable de 24 Puertos PoE+, Capacidad de Enrutamiento L3",
+      "precio_usd": 1150,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "Network"
+    },
+    {
+      "id": 5,
+      "tipo": "Hardware",
+      "subcategoria": "Periféricos",
+      "marca": "Logitech",
+      "nombre": "Logitech MX Master 3S",
+      "descripcion": "Ratón Inalámbrico de Precisión, Conexión Multidispositivo, Sensor 8K DPI",
+      "precio_usd": 99,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "MousePointer2"
+    },
+    {
+      "id": 6,
+      "tipo": "Hardware",
+      "subcategoria": "Periféricos",
+      "marca": "APC",
+      "nombre": "UPS APC Smart-UPS 1500VA",
+      "descripcion": "Respaldo de Energía Inteligente con Pantalla LCD, Salidas Protegidas",
+      "precio_usd": 380,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "BatteryCharging"
+    },
+    {
+      "id": 7,
+      "tipo": "Hardware",
+      "subcategoria": "Computadoras",
+      "marca": "Dell Technologies",
+      "nombre": "Dell Latitude 5440",
+      "descripcion": "Intel Core i7 13va Gen, 16GB RAM, 512GB SSD, Pantalla 14\" FHD",
+      "precio_usd": 1180,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "Laptop"
+    },
+    {
+      "id": 8,
+      "tipo": "Hardware",
+      "subcategoria": "Computadoras",
+      "marca": "Lenovo",
+      "nombre": "Lenovo ThinkCentre M70q",
+      "descripcion": "Mini PC Intel Core i5, 8GB RAM, 256GB SSD, Windows 11 Pro",
+      "precio_usd": 760,
+      "unidad": null,
+      "disponibilidad": "Stock Limitado",
+      "icono": "Laptop"
+    },
+    {
+      "id": 9,
+      "tipo": "Hardware",
+      "subcategoria": "Servidores",
+      "marca": "HPE",
+      "nombre": "HPE ProLiant ML30 Gen10 Plus",
+      "descripcion": "Servidor Torre Intel Xeon E-2314, 16GB RAM, Fuente Redundante Opcional",
+      "precio_usd": 1490,
+      "unidad": null,
+      "disponibilidad": "Stock Limitado",
+      "icono": "Database"
+    },
+    {
+      "id": 10,
+      "tipo": "Hardware",
+      "subcategoria": "Redes / Switches",
+      "marca": "Cisco Systems",
+      "nombre": "Cisco Catalyst 1000 8 Puertos",
+      "descripcion": "Switch Gigabit Gestionable, 8 Puertos, 2 Uplinks SFP",
+      "precio_usd": 340,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "Network"
+    },
+    {
+      "id": 11,
+      "tipo": "Hardware",
+      "subcategoria": "Periféricos",
+      "marca": "Dell Technologies",
+      "nombre": "Teclado Dell KB522",
+      "descripcion": "Teclado Multimedia con Cable USB, Distribución Español Latinoamérica",
+      "precio_usd": 35,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "Keyboard"
+    },
+    {
+      "id": 12,
+      "tipo": "Software",
+      "subcategoria": "Licencias",
+      "marca": "Microsoft",
+      "nombre": "Microsoft 365 Business Standard",
+      "descripcion": "Apps de Office, Teams, 1TB en OneDrive y correo corporativo",
+      "precio_usd": 12.5,
+      "unidad": "/usuario/mes",
+      "disponibilidad": "Stock Disponible",
+      "icono": "AppWindow"
+    },
+    {
+      "id": 13,
+      "tipo": "Software",
+      "subcategoria": "Licencias",
+      "marca": "Microsoft",
+      "nombre": "Windows Server 2022 Standard",
+      "descripcion": "Licencia perpetua para 16 núcleos, incluye 2 máquinas virtuales",
+      "precio_usd": 1069,
+      "unidad": null,
+      "disponibilidad": "Stock Disponible",
+      "icono": "AppWindow"
+    },
+    {
+      "id": 14,
+      "tipo": "Software",
+      "subcategoria": "Seguridad",
+      "marca": "ESET",
+      "nombre": "ESET PROTECT Advanced",
+      "descripcion": "Protección de endpoints con cifrado de disco y consola en la nube",
+      "precio_usd": 45,
+      "unidad": "/licencia/año",
+      "disponibilidad": "Stock Disponible",
+      "icono": "ShieldCheck"
+    },
+    {
+      "id": 15,
+      "tipo": "Software",
+      "subcategoria": "Seguridad",
+      "marca": "Fortinet",
+      "nombre": "FortiClient EMS",
+      "descripcion": "Gestión centralizada de endpoints con acceso Zero Trust",
+      "precio_usd": 85,
+      "unidad": "/licencia/año",
+      "disponibilidad": "Stock Limitado",
+      "icono": "ShieldCheck"
+    },
+    {
+      "id": 16,
+      "tipo": "Software",
+      "subcategoria": "Respaldo",
+      "marca": "Veeam",
+      "nombre": "Veeam Backup Essentials",
+      "descripcion": "Respaldo y recuperación para entornos virtuales y físicos, 5 cargas de trabajo",
+      "precio_usd": 320,
+      "unidad": "/año",
+      "disponibilidad": "Stock Disponible",
+      "icono": "HardDrive"
+    },
+    {
+      "id": 17,
+      "tipo": "Servicios",
+      "subcategoria": "Soporte",
+      "marca": "Partner certificado",
+      "nombre": "Soporte técnico mensual",
+      "descripcion": "Mesa de ayuda 8x5, atención remota y visitas on-site por incidente",
+      "precio_usd": 450,
+      "unidad": "/mes",
+      "disponibilidad": "Disponible",
+      "icono": "Headset"
+    },
+    {
+      "id": 18,
+      "tipo": "Servicios",
+      "subcategoria": "Instalación",
+      "marca": "Partner certificado",
+      "nombre": "Cableado estructurado Cat6",
+      "descripcion": "Instalación, certificación y rotulado de puntos de red",
+      "precio_usd": 38,
+      "unidad": "/punto",
+      "disponibilidad": "Disponible",
+      "icono": "Cable"
+    },
+    {
+      "id": 19,
+      "tipo": "Servicios",
+      "subcategoria": "Consultoría",
+      "marca": "Partner certificado",
+      "nombre": "Migración a la nube",
+      "descripcion": "Diagnóstico, plan y ejecución de migración de cargas a Azure o AWS",
+      "precio_usd": 2800,
+      "unidad": "/proyecto",
+      "disponibilidad": "Disponible",
+      "icono": "Cloud"
+    },
+    {
+      "id": 20,
+      "tipo": "Servicios",
+      "subcategoria": "Consultoría",
+      "marca": "Partner certificado",
+      "nombre": "Auditoría de seguridad TI",
+      "descripcion": "Pruebas de vulnerabilidades, informe ejecutivo y plan de remediación",
+      "precio_usd": 3500,
+      "unidad": "/proyecto",
+      "disponibilidad": "Cupos Limitados",
+      "icono": "ClipboardCheck"
+    }
+  ],
+  "cotizacionesComprador": [
+    {
+      "folio": "COT-00126",
+      "fecha": "2026-01-15",
+      "estado": "Aprobada",
+      "descuento": 703,
+      "lineas": [
+        {
+          "id": 2,
+          "qty": 2
+        },
+        {
+          "id": 1,
+          "qty": 5
+        },
+        {
+          "id": 3,
+          "qty": 3
+        },
+        {
+          "id": 4,
+          "qty": 2
+        },
+        {
+          "id": 5,
+          "qty": 2
+        }
+      ],
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00125",
+      "fecha": "2026-01-12",
+      "estado": "Pendiente",
+      "descuento": 40,
+      "lineas": [
+        {
+          "id": 7,
+          "qty": 2
+        },
+        {
+          "id": 3,
+          "qty": 1
+        },
+        {
+          "id": 4,
+          "qty": 1
+        }
+      ],
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00124",
+      "fecha": "2026-01-08",
+      "estado": "Rechazada",
+      "descuento": 0,
+      "lineas": [
+        {
+          "id": 2,
+          "qty": 1
+        }
+      ],
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00123",
+      "fecha": "2026-01-05",
+      "estado": "Aprobada",
+      "descuento": 51,
+      "lineas": [
+        {
+          "id": 8,
+          "qty": 1
+        },
+        {
+          "id": 10,
+          "qty": 2
+        },
+        {
+          "id": 5,
+          "qty": 4
+        },
+        {
+          "id": 11,
+          "qty": 1
+        }
+      ],
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00122",
+      "fecha": "2025-12-28",
+      "estado": "Vencida",
+      "descuento": 20,
+      "lineas": [
+        {
+          "id": 2,
+          "qty": 8
+        },
+        {
+          "id": 20,
+          "qty": 2
+        },
+        {
+          "id": 19,
+          "qty": 2
+        },
+        {
+          "id": 4,
+          "qty": 4
+        },
+        {
+          "id": 9,
+          "qty": 4
+        },
+        {
+          "id": 7,
+          "qty": 2
+        }
+      ],
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00121",
+      "fecha": "2025-12-15",
+      "estado": "Aprobada",
+      "descuento": 39,
+      "lineas": [
+        {
+          "id": 5,
+          "qty": 1
+        },
+        {
+          "id": 6,
+          "qty": 1
+        },
+        {
+          "id": 8,
+          "qty": 1
+        }
+      ],
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00120",
+      "fecha": "2025-12-10",
+      "estado": "Rechazada",
+      "descuento": 107,
+      "lineas": [
+        {
+          "id": 7,
+          "qty": 3
+        },
+        {
+          "id": 1,
+          "qty": 3
+        },
+        {
+          "id": 4,
+          "qty": 2
+        },
+        {
+          "id": 3,
+          "qty": 2
+        },
+        {
+          "id": 11,
+          "qty": 2
+        }
+      ],
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00119",
+      "fecha": "2025-12-08",
+      "estado": "Pendiente",
+      "lineas": [
+        {
+          "id": 19,
+          "qty": 2
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00118",
+      "fecha": "2025-12-05",
+      "estado": "Pendiente",
+      "lineas": [
+        {
+          "id": 11,
+          "qty": 2
+        },
+        {
+          "id": 16,
+          "qty": 4
+        },
+        {
+          "id": 14,
+          "qty": 3
+        }
+      ],
+      "descuento": 134,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00117",
+      "fecha": "2025-12-02",
+      "estado": "Pendiente",
+      "lineas": [
+        {
+          "id": 8,
+          "qty": 3
+        }
+      ],
+      "descuento": 137,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00116",
+      "fecha": "2025-11-29",
+      "estado": "Pendiente",
+      "lineas": [
+        {
+          "id": 14,
+          "qty": 2
+        }
+      ],
+      "descuento": 8,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00115",
+      "fecha": "2025-11-26",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 3,
+          "qty": 3
+        },
+        {
+          "id": 19,
+          "qty": 3
+        },
+        {
+          "id": 13,
+          "qty": 3
+        },
+        {
+          "id": 8,
+          "qty": 2
+        }
+      ],
+      "descuento": 1295,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00114",
+      "fecha": "2025-11-23",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 4,
+          "qty": 2
+        },
+        {
+          "id": 9,
+          "qty": 2
+        }
+      ],
+      "descuento": 475,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00113",
+      "fecha": "2025-11-20",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 15,
+          "qty": 4
+        },
+        {
+          "id": 2,
+          "qty": 2
+        },
+        {
+          "id": 12,
+          "qty": 3
+        }
+      ],
+      "descuento": 158,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00112",
+      "fecha": "2025-11-17",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 19,
+          "qty": 1
+        }
+      ],
+      "descuento": 84,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00111",
+      "fecha": "2025-11-14",
+      "estado": "Rechazada",
+      "lineas": [
+        {
+          "id": 14,
+          "qty": 4
+        },
+        {
+          "id": 11,
+          "qty": 1
+        }
+      ],
+      "descuento": 6,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00110",
+      "fecha": "2025-11-11",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 8,
+          "qty": 2
+        },
+        {
+          "id": 7,
+          "qty": 3
+        }
+      ],
+      "descuento": 304,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00109",
+      "fecha": "2025-11-08",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 19,
+          "qty": 2
+        }
+      ],
+      "descuento": 504,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00108",
+      "fecha": "2025-11-05",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 13,
+          "qty": 3
+        },
+        {
+          "id": 11,
+          "qty": 3
+        },
+        {
+          "id": 19,
+          "qty": 2
+        }
+      ],
+      "descuento": 535,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00107",
+      "fecha": "2025-11-02",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 12,
+          "qty": 2
+        },
+        {
+          "id": 7,
+          "qty": 2
+        }
+      ],
+      "descuento": 215,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00106",
+      "fecha": "2025-10-30",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 3,
+          "qty": 4
+        },
+        {
+          "id": 2,
+          "qty": 2
+        },
+        {
+          "id": 4,
+          "qty": 1
+        },
+        {
+          "id": 20,
+          "qty": 1
+        }
+      ],
+      "descuento": 674,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00105",
+      "fecha": "2025-10-27",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 10,
+          "qty": 3
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00104",
+      "fecha": "2025-10-24",
+      "estado": "Rechazada",
+      "lineas": [
+        {
+          "id": 18,
+          "qty": 4
+        },
+        {
+          "id": 19,
+          "qty": 4
+        },
+        {
+          "id": 6,
+          "qty": 1
+        },
+        {
+          "id": 5,
+          "qty": 1
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00103",
+      "fecha": "2025-10-21",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 5,
+          "qty": 3
+        },
+        {
+          "id": 10,
+          "qty": 3
+        },
+        {
+          "id": 18,
+          "qty": 1
+        }
+      ],
+      "descuento": 41,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00102",
+      "fecha": "2025-10-18",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 3,
+          "qty": 2
+        },
+        {
+          "id": 1,
+          "qty": 4
+        },
+        {
+          "id": 13,
+          "qty": 4
+        },
+        {
+          "id": 19,
+          "qty": 1
+        }
+      ],
+      "descuento": 1036,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00101",
+      "fecha": "2025-10-15",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 14,
+          "qty": 2
+        },
+        {
+          "id": 5,
+          "qty": 1
+        },
+        {
+          "id": 12,
+          "qty": 1
+        }
+      ],
+      "descuento": 18,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00100",
+      "fecha": "2025-10-12",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 15,
+          "qty": 2
+        },
+        {
+          "id": 1,
+          "qty": 1
+        },
+        {
+          "id": 19,
+          "qty": 1
+        }
+      ],
+      "descuento": 232,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00099",
+      "fecha": "2025-10-09",
+      "estado": "Vencida",
+      "lineas": [
+        {
+          "id": 1,
+          "qty": 4
+        },
+        {
+          "id": 18,
+          "qty": 4
+        },
+        {
+          "id": 20,
+          "qty": 4
+        },
+        {
+          "id": 9,
+          "qty": 1
+        }
+      ],
+      "descuento": 1154,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00098",
+      "fecha": "2025-10-06",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 8,
+          "qty": 1
+        },
+        {
+          "id": 9,
+          "qty": 4
+        },
+        {
+          "id": 12,
+          "qty": 2
+        },
+        {
+          "id": 13,
+          "qty": 3
+        }
+      ],
+      "descuento": 299,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00097",
+      "fecha": "2025-10-03",
+      "estado": "Rechazada",
+      "lineas": [
+        {
+          "id": 9,
+          "qty": 1
+        },
+        {
+          "id": 7,
+          "qty": 4
+        },
+        {
+          "id": 20,
+          "qty": 3
+        }
+      ],
+      "descuento": 1504,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00096",
+      "fecha": "2025-09-30",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 4,
+          "qty": 3
+        },
+        {
+          "id": 3,
+          "qty": 2
+        },
+        {
+          "id": 12,
+          "qty": 4
+        },
+        {
+          "id": 19,
+          "qty": 2
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00095",
+      "fecha": "2025-09-27",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 4,
+          "qty": 3
+        },
+        {
+          "id": 11,
+          "qty": 3
+        }
+      ],
+      "descuento": 213,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00094",
+      "fecha": "2025-09-24",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 8,
+          "qty": 4
+        },
+        {
+          "id": 1,
+          "qty": 2
+        },
+        {
+          "id": 11,
+          "qty": 1
+        },
+        {
+          "id": 15,
+          "qty": 2
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00093",
+      "fecha": "2025-09-21",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 9,
+          "qty": 1
+        },
+        {
+          "id": 16,
+          "qty": 4
+        },
+        {
+          "id": 19,
+          "qty": 4
+        }
+      ],
+      "descuento": 838,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00092",
+      "fecha": "2025-09-18",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 1,
+          "qty": 4
+        },
+        {
+          "id": 13,
+          "qty": 3
+        },
+        {
+          "id": 18,
+          "qty": 1
+        },
+        {
+          "id": 3,
+          "qty": 1
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00091",
+      "fecha": "2025-09-15",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 1,
+          "qty": 3
+        }
+      ],
+      "descuento": 243,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00090",
+      "fecha": "2025-09-12",
+      "estado": "Rechazada",
+      "lineas": [
+        {
+          "id": 3,
+          "qty": 1
+        }
+      ],
+      "descuento": 25,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00089",
+      "fecha": "2025-09-09",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 10,
+          "qty": 4
+        }
+      ],
+      "descuento": 41,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00088",
+      "fecha": "2025-09-06",
+      "estado": "Vencida",
+      "lineas": [
+        {
+          "id": 16,
+          "qty": 2
+        },
+        {
+          "id": 9,
+          "qty": 1
+        },
+        {
+          "id": 5,
+          "qty": 4
+        }
+      ],
+      "descuento": 227,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00087",
+      "fecha": "2025-09-03",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 19,
+          "qty": 3
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00086",
+      "fecha": "2025-08-31",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 13,
+          "qty": 1
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    },
+    {
+      "folio": "COT-00085",
+      "fecha": "2025-08-28",
+      "estado": "Aprobada",
+      "lineas": [
+        {
+          "id": 13,
+          "qty": 3
+        },
+        {
+          "id": 10,
+          "qty": 4
+        }
+      ],
+      "descuento": 0,
+      "email": "alejandro.torres@empresa.com",
+      "solicitante": "Alejandro Torres"
+    }
+  ],
+  "solicitudes": [
+    {
+      "id": "SOL-1012",
+      "cliente": {
+        "nombre": "MercadoLibre Colombia S.A.S.",
+        "corto": "MercadoLibre Colombia",
+        "nit": "900.234.129-2",
+        "contacto": "Carlos Mendoza",
+        "email": "cmendoza@mercadolibre.com.co",
+        "direccion": "Avenida El Dorado #103-60",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "E-commerce"
+      },
+      "fecha": "2026-10-24",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "Lenovo ThinkPad L14 Gen 4-40",
+          "nombre": "Lenovo ThinkPad L14 Gen 4",
+          "desc": "Intel Core i7, 16GB RAM, 512GB SSD, Windows 11 Pro",
+          "qty": 40,
+          "precio": 4200000,
+          "descuento": 12
+        },
+        {
+          "id": "Servidores Dell PowerEdge R760-2",
+          "nombre": "Servidores Dell PowerEdge R760",
+          "desc": "Intel Xeon Silver, 64GB RAM, RAID 5, Garantía 3 Años",
+          "qty": 2,
+          "precio": 28500000,
+          "descuento": 5
+        },
+        {
+          "id": "Access Point Aruba Instant On AP22-4",
+          "nombre": "Access Point Aruba Instant On AP22",
+          "desc": "WiFi 6, Dual Band, MIMO 2x2, PoE Ready",
+          "qty": 4,
+          "precio": 850000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1011",
+      "cliente": {
+        "nombre": "Rappi Colombia S.A.S.",
+        "corto": "Rappi Colombia S.A.S.",
+        "nit": "830.012.332-1",
+        "contacto": "Laura Gómez",
+        "email": "lgomez@rappi.com",
+        "direccion": "Calle 93 #19-58",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Tecnología"
+      },
+      "fecha": "2026-10-23",
+      "estado": "Borrador",
+      "items": [
+        {
+          "id": "Licencias Microsoft 365 Business Premium-150",
+          "nombre": "Licencias Microsoft 365 Business Premium",
+          "desc": "Suscripción anual por usuario, incluye Intune y Defender",
+          "qty": 150,
+          "precio": 95000,
+          "descuento": 8
+        },
+        {
+          "id": "Soporte Anual Especializado-1",
+          "nombre": "Soporte Anual Especializado",
+          "desc": "Mesa de ayuda 24/7 y gestión de tenant M365",
+          "qty": 1,
+          "precio": 18000000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1010",
+      "cliente": {
+        "nombre": "Banco de Bogotá S.A.",
+        "corto": "Banco de Bogotá S.A.",
+        "nit": "860.002.964-4",
+        "contacto": "Andrés Rincón",
+        "email": "arincon@bancodebogota.com.co",
+        "direccion": "Calle 36 #7-47",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Banca"
+      },
+      "fecha": "2026-10-22",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "Upgrade de Firewall Core IPS Cisco Firepower-2",
+          "nombre": "Upgrade de Firewall Core IPS Cisco Firepower",
+          "desc": "Firepower 2140 en alta disponibilidad, 3 años de soporte",
+          "qty": 2,
+          "precio": 92000000,
+          "descuento": 0
+        },
+        {
+          "id": "Licenciamiento Cisco Secure-1000",
+          "nombre": "Licenciamiento Cisco Secure",
+          "desc": "Cisco Secure Endpoint para 1000 nodos, 1 año",
+          "qty": 1000,
+          "precio": 210000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1009",
+      "cliente": {
+        "nombre": "Nubank Colombia",
+        "corto": "Nubank Colombia",
+        "nit": "901.442.128-5",
+        "contacto": "Valentina Ruiz",
+        "email": "vruiz@nubank.com.co",
+        "direccion": "Carrera 7 #71-21",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Fintech"
+      },
+      "fecha": "2026-10-20",
+      "estado": "Enviada",
+      "items": [
+        {
+          "id": "Consultoría DevOps-120",
+          "nombre": "Consultoría DevOps",
+          "desc": "120 Horas / Mes - AWS Cloud Migration",
+          "qty": 120,
+          "precio": 380000,
+          "descuento": 5
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1008",
+      "cliente": {
+        "nombre": "Bancolombia S.A.",
+        "corto": "Bancolombia S.A.",
+        "nit": "890.903.938-8",
+        "contacto": "Juliana Restrepo",
+        "email": "jrestrepo@bancolombia.com.co",
+        "direccion": "Carrera 48 #26-85",
+        "ciudad": "Medellín, Colombia",
+        "sector": "Banca"
+      },
+      "fecha": "2026-10-18",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "Dell Latitude 5440-60",
+          "nombre": "Dell Latitude 5440",
+          "desc": "Intel Core i7 13va Gen, 16GB RAM, 512GB SSD",
+          "qty": 60,
+          "precio": 4720000,
+          "descuento": 0
+        },
+        {
+          "id": "Monitor Dell UltraSharp 27\"-60",
+          "nombre": "Monitor Dell UltraSharp 27\"",
+          "desc": "4K UHD, Panel IPS, USB-C",
+          "qty": 60,
+          "precio": 1680000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1007",
+      "cliente": {
+        "nombre": "Almacenes Éxito S.A.",
+        "corto": "Grupo Éxito",
+        "nit": "890.900.608-9",
+        "contacto": "Felipe Arango",
+        "email": "farango@grupo-exito.com",
+        "direccion": "Carrera 48 #32B Sur-139",
+        "ciudad": "Envigado, Colombia",
+        "sector": "Retail"
+      },
+      "fecha": "2026-10-17",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "UPS APC Smart-UPS 1500VA-35",
+          "nombre": "UPS APC Smart-UPS 1500VA",
+          "desc": "Respaldo de energía con pantalla LCD",
+          "qty": 35,
+          "precio": 1520000,
+          "descuento": 0
+        },
+        {
+          "id": "Cisco Catalyst 1000 8 Puertos-35",
+          "nombre": "Cisco Catalyst 1000 8 Puertos",
+          "desc": "Switch Gigabit gestionable",
+          "qty": 35,
+          "precio": 1360000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1006",
+      "cliente": {
+        "nombre": "Avianca S.A.",
+        "corto": "Avianca S.A.",
+        "nit": "890.100.577-6",
+        "contacto": "Camila Herrera",
+        "email": "cherrera@avianca.com",
+        "direccion": "Avenida El Dorado #93-30",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Aerolínea"
+      },
+      "fecha": "2026-10-16",
+      "estado": "Borrador",
+      "items": [
+        {
+          "id": "Servidor HPE ProLiant DL380-6",
+          "nombre": "Servidor HPE ProLiant DL380",
+          "desc": "Intel Xeon Silver 4314, 32GB RAM",
+          "qty": 6,
+          "precio": 9800000,
+          "descuento": 6
+        },
+        {
+          "id": "Veeam Backup Essentials-6",
+          "nombre": "Veeam Backup Essentials",
+          "desc": "Respaldo para 5 cargas de trabajo, 1 año",
+          "qty": 6,
+          "precio": 1280000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1005",
+      "cliente": {
+        "nombre": "Ecopetrol S.A.",
+        "corto": "Ecopetrol S.A.",
+        "nit": "899.999.068-1",
+        "contacto": "Ricardo Peña",
+        "email": "rpena@ecopetrol.com.co",
+        "direccion": "Carrera 13 #36-24",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Energía"
+      },
+      "fecha": "2026-10-15",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "Auditoría de seguridad TI-1",
+          "nombre": "Auditoría de seguridad TI",
+          "desc": "Pruebas de vulnerabilidades e informe ejecutivo",
+          "qty": 1,
+          "precio": 14000000,
+          "descuento": 0
+        },
+        {
+          "id": "FortiClient EMS-800",
+          "nombre": "FortiClient EMS",
+          "desc": "Gestión de endpoints Zero Trust, 1 año",
+          "qty": 800,
+          "precio": 340000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1004",
+      "cliente": {
+        "nombre": "Alpina Productos Alimenticios S.A.",
+        "corto": "Alpina S.A.",
+        "nit": "860.025.900-2",
+        "contacto": "Natalia Castro",
+        "email": "ncastro@alpina.com",
+        "direccion": "Km 3 Vía Briceño-Zipaquirá",
+        "ciudad": "Sopó, Colombia",
+        "sector": "Alimentos"
+      },
+      "fecha": "2026-10-14",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "Lenovo ThinkCentre M70q-45",
+          "nombre": "Lenovo ThinkCentre M70q",
+          "desc": "Mini PC Intel Core i5, 8GB RAM, 256GB SSD",
+          "qty": 45,
+          "precio": 3040000,
+          "descuento": 0
+        },
+        {
+          "id": "Teclado Dell KB522-45",
+          "nombre": "Teclado Dell KB522",
+          "desc": "Teclado multimedia USB, español latinoamérica",
+          "qty": 45,
+          "precio": 140000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1003",
+      "cliente": {
+        "nombre": "Addi Colombia S.A.S.",
+        "corto": "Addi Colombia",
+        "nit": "901.324.876-3",
+        "contacto": "Mateo Vargas",
+        "email": "mvargas@addi.com",
+        "direccion": "Calle 99 #10-19",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Fintech"
+      },
+      "fecha": "2026-10-12",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "Migración a la nube-1",
+          "nombre": "Migración a la nube",
+          "desc": "Diagnóstico, plan y ejecución de migración a AWS",
+          "qty": 1,
+          "precio": 11200000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1002",
+      "cliente": {
+        "nombre": "MercadoLibre Colombia S.A.S.",
+        "corto": "MercadoLibre Colombia",
+        "nit": "900.234.129-2",
+        "contacto": "Carlos Mendoza",
+        "email": "cmendoza@mercadolibre.com.co",
+        "direccion": "Avenida El Dorado #103-60",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "E-commerce"
+      },
+      "fecha": "2026-10-10",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "Cableado estructurado Cat6-220",
+          "nombre": "Cableado estructurado Cat6",
+          "desc": "Instalación y certificación de puntos de red",
+          "qty": 220,
+          "precio": 152000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-1001",
+      "cliente": {
+        "nombre": "Rappi Colombia S.A.S.",
+        "corto": "Rappi Colombia S.A.S.",
+        "nit": "830.012.332-1",
+        "contacto": "Laura Gómez",
+        "email": "lgomez@rappi.com",
+        "direccion": "Calle 93 #19-58",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Tecnología"
+      },
+      "fecha": "2026-10-08",
+      "estado": "Por Cotizar",
+      "items": [
+        {
+          "id": "Logitech MX Master 3S-120",
+          "nombre": "Logitech MX Master 3S",
+          "desc": "Ratón inalámbrico de precisión",
+          "qty": 120,
+          "precio": 396000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-0998",
+      "cliente": {
+        "nombre": "Bancolombia S.A.",
+        "corto": "Bancolombia S.A.",
+        "nit": "890.903.938-8",
+        "contacto": "Juliana Restrepo",
+        "email": "jrestrepo@bancolombia.com.co",
+        "direccion": "Carrera 48 #26-85",
+        "ciudad": "Medellín, Colombia",
+        "sector": "Banca"
+      },
+      "fecha": "2026-10-03",
+      "estado": "Aprobada",
+      "items": [
+        {
+          "id": "Windows Server 2022 Standard-12",
+          "nombre": "Windows Server 2022 Standard",
+          "desc": "Licencia perpetua 16 núcleos",
+          "qty": 12,
+          "precio": 4276000,
+          "descuento": 10
+        },
+        {
+          "id": "Soporte técnico mensual-12",
+          "nombre": "Soporte técnico mensual",
+          "desc": "Mesa de ayuda 8x5, 12 meses",
+          "qty": 12,
+          "precio": 1800000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-0995",
+      "cliente": {
+        "nombre": "Nubank Colombia",
+        "corto": "Nubank Colombia",
+        "nit": "901.442.128-5",
+        "contacto": "Valentina Ruiz",
+        "email": "vruiz@nubank.com.co",
+        "direccion": "Carrera 7 #71-21",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Fintech"
+      },
+      "fecha": "2026-09-29",
+      "estado": "Aprobada",
+      "items": [
+        {
+          "id": "Dell Latitude 5440-80",
+          "nombre": "Dell Latitude 5440",
+          "desc": "Intel Core i7 13va Gen, 16GB RAM, 512GB SSD",
+          "qty": 80,
+          "precio": 4720000,
+          "descuento": 7
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-0991",
+      "cliente": {
+        "nombre": "Almacenes Éxito S.A.",
+        "corto": "Grupo Éxito",
+        "nit": "890.900.608-9",
+        "contacto": "Felipe Arango",
+        "email": "farango@grupo-exito.com",
+        "direccion": "Carrera 48 #32B Sur-139",
+        "ciudad": "Envigado, Colombia",
+        "sector": "Retail"
+      },
+      "fecha": "2026-09-24",
+      "estado": "Aprobada",
+      "items": [
+        {
+          "id": "ESET PROTECT Advanced-1500",
+          "nombre": "ESET PROTECT Advanced",
+          "desc": "Protección de endpoints, 1 año",
+          "qty": 1500,
+          "precio": 180000,
+          "descuento": 10
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    },
+    {
+      "id": "SOL-0987",
+      "cliente": {
+        "nombre": "Avianca S.A.",
+        "corto": "Avianca S.A.",
+        "nit": "890.100.577-6",
+        "contacto": "Camila Herrera",
+        "email": "cherrera@avianca.com",
+        "direccion": "Avenida El Dorado #93-30",
+        "ciudad": "Bogotá D.C., Colombia",
+        "sector": "Aerolínea"
+      },
+      "fecha": "2026-09-19",
+      "estado": "Rechazada",
+      "items": [
+        {
+          "id": "Cisco Catalyst 9200L-14",
+          "nombre": "Cisco Catalyst 9200L",
+          "desc": "Switch 24 puertos PoE+",
+          "qty": 14,
+          "precio": 4600000,
+          "descuento": 0
+        }
+      ],
+      "validez": 30,
+      "notas": "1. Tiempos de entrega: 8 a 15 días hábiles a partir de la orden de compra.\n2. Garantía de hardware provista por el fabricante oficial.\n3. Forma de pago: Crédito corporativo a 30 días neto posterior a la facturación de servicios.\n4. Precios cotizados no incluyen impuestos fuera de IVA."
+    }
+  ]
+}

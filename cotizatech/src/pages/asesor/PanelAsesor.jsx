@@ -46,7 +46,7 @@ export default function PanelAsesor() {
             <button onClick={() => navigate('/asesor/solicitudes')} className="font-semibold text-brand">Ver bandeja completa</button>
           </div>
         } />
-      </div>
+      </div>|
     </>
   )
 }
