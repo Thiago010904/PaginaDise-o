@@ -1,0 +1,54 @@
+@startuml
+title Secuencia 1 - Inicio de sesión (Épica: Acceso y cuenta · HU-01)
+skinparam shadowing false
+autonumber
+
+actor "Comprador / Asesor" as U
+participant "Login.jsx" as Login
+participant "AuthContext" as Auth
+participant "authApi\n(src/api)" as AuthApi
+participant "Express\nrateLimit" as Limite
+participant "routes/auth.js" as Ruta
+participant "passwords.js" as Pwd
+database "SQLite" as BD
+
+U -> Login : escribe correo y contraseña,\npulsa "Iniciar Sesión"
+alt campos vacíos
+  Login --> U : "Ingresa tu correo y tu contraseña."
+else campos completos
+  Login -> Auth : login(email, password)
+  Auth -> AuthApi : login(email, password)
+  AuthApi -> Limite : POST /api/auth/login {email, password}
+  alt más de 10 intentos en 15 min desde la misma IP
+    Limite --> AuthApi : 429 "Demasiados intentos..."
+    AuthApi --> Login : ApiError(429)
+    Login --> U : muestra el mensaje
+  else dentro del límite
+    Limite -> Ruta : continúa
+    Ruta -> Ruta : valida cuerpo (Zod),\nnormaliza correo
+    Ruta -> BD : SELECT id, password_hash, activo\nFROM usuarios WHERE email = ?
+    BD --> Ruta : usuario | nada
+    Ruta -> Pwd : verificarPassword(password, hash)
+    note right of Pwd
+      scrypt + comparación en tiempo constante;
+      si el usuario no existe compara contra un
+      hash falso para no revelar qué correos existen
+    end note
+    Pwd --> Ruta : true | false
+    alt usuario inexistente, inactivo o contraseña incorrecta
+      Ruta --> AuthApi : 401 "Correo o contraseña incorrectos."
+      AuthApi --> Login : ApiError(401)
+      Login --> U : muestra el error
+    else credenciales válidas
+      Ruta -> BD : SELECT usuario + empresa
+      BD --> Ruta : datos del usuario
+      Ruta -> Ruta : emitirSesion(): firma JWT {sub, rol}\ny lo guarda en cookie httpOnly (8 h)
+      Ruta --> AuthApi : 200 {user} + Set-Cookie
+      AuthApi --> Auth : user
+      Auth -> Auth : setUser(user)
+      Auth --> Login : user
+      Login --> U : redirige según el rol:\n/dashboard (comprador) o /asesor
+    end
+  end
+end
+@enduml

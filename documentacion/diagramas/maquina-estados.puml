@@ -1,0 +1,45 @@
+@startuml
+title CotizaTech - Máquina de estados de la Cotización
+skinparam shadowing false
+skinparam state {
+  BackgroundColor #F8FAFC
+  BorderColor #475569
+}
+hide empty description
+
+[*] --> PorCotizar : solicitar() [carrito no vacío]\n/ asignar folio, copiar ítems,\nvaciar carrito, registrar historial
+
+state "Por Cotizar" as PorCotizar : entry / aparece en la bandeja del asesor\nComprador lo ve como "Pendiente"
+state "Borrador" as Borrador : El asesor edita ítems, descuentos,\nnotas y validez\nComprador lo ve como "Pendiente"
+state "Enviada" as Enviada : entry / fecha_envio = hoy\nentry / correo al cliente (simulado)\nYa no se puede editar
+state "Aprobada" as Aprobada : entry / correo al asesor (simulado)
+state "Rechazada" as Rechazada
+state "Vencida" as Vencida : entry / correo al cliente (simulado)
+
+PorCotizar --> Borrador : guardar(ítems, notas, validez)\n[datos válidos]
+Borrador --> Borrador : guardar(ítems, notas, validez)\n[datos válidos]
+PorCotizar --> Enviada : enviar()\n[descuentos ≤ 15% (RN-01)\ny cada ítem con cantidad y precio]
+Borrador --> Enviada : enviar()\n[descuentos ≤ 15% (RN-01)\ny cada ítem con cantidad y precio]
+PorCotizar --> Rechazada : rechazarPorAsesor()
+Borrador --> Rechazada : rechazarPorAsesor()
+
+Enviada --> Aprobada : decidir("Aprobada")\n[comprador dueño y vigente]
+Enviada --> Rechazada : decidir("Rechazada")\n[comprador dueño y vigente]
+Enviada --> Vencida : vencer()\n[hoy > fecha_envio + validez (RN-03)]
+
+Aprobada --> [*]
+Rechazada --> [*]
+Vencida --> [*]
+
+note right of Enviada
+  Acciones NO permitidas (409):
+  - guardar / enviar / rechazarPorAsesor
+  - decidir en cualquier otro estado
+end note
+
+note bottom of PorCotizar
+  Cada transición:
+  - la valida la clase del estado (patrón State)
+  - se registra en cotizacion_historial (Observer)
+end note
+@enduml

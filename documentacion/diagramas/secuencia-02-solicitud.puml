@@ -1,0 +1,59 @@
+@startuml
+title Secuencia 2 - Enviar solicitud de cotización (Épica: Catálogo y solicitud · HU-02, HU-03)
+skinparam shadowing false
+autonumber
+
+actor Comprador as U
+participant "Layout.jsx\n(panel del carrito)" as UI
+participant "CotizacionesContext" as Ctx
+participant "cotizacionesApi" as Api
+participant "middleware\nautenticar / requerirRol" as MW
+participant "routes/cotizaciones.js" as Ruta
+participant "CotizacionFacade\n<<Facade>>" as F
+participant "PublicadorEventos\n<<Observer>>" as Pub
+participant "HistorialObserver" as Hist
+database "SQLite" as BD
+
+U -> UI : pulsa "Enviar cotización"
+UI -> Ctx : enviar()
+Ctx -> Api : solicitar()
+Api -> MW : POST /api/cotizaciones (cookie JWT)
+alt sin sesión o token vencido
+  MW --> Api : 401 "Debes iniciar sesión."
+  Api --> Ctx : ApiError(401) + evento sesión expirada
+  Ctx --> U : vuelve al login
+else rol distinto de comprador
+  MW --> Api : 403 "No tienes permiso para esta acción."
+else comprador autenticado
+  MW -> Ruta : req.user
+  Ruta -> F : solicitarDesdeCarrito(user)
+  F -> BD : BEGIN
+  F -> BD : SELECT ítems del carrito (productos activos)
+  BD --> F : ítems
+  alt carrito vacío
+    F -> BD : ROLLBACK
+    F --> Ruta : HttpError 400
+    Ruta --> Api : 400 "Tu cotización está vacía..."
+    Api --> Ctx : ApiError(400)
+    Ctx --> U : aviso de error
+  else hay ítems
+    F -> BD : SELECT configuración (TRM, IVA, notas)
+    F -> BD : siguiente folio (COT-xxxxx)
+    F -> BD : INSERT cotizaciones (estado 'Por Cotizar')
+    loop por cada ítem del carrito
+      F -> BD : INSERT cotizacion_items\n(precio COP = precio USD × TRM)
+    end
+    F -> BD : DELETE carrito_items del usuario
+    F -> Pub : publicar(estadoCambiado,\nnull → 'Por Cotizar')
+    Pub -> Hist : actualizar(...)
+    Hist -> BD : INSERT cotizacion_historial
+    F -> BD : COMMIT
+    F --> Ruta : folio
+    Ruta --> Api : 201 {folio}
+    Api --> Ctx : folio
+    Ctx -> Ctx : vacía carrito, cierra panel
+    Ctx --> UI : folio
+    UI --> U : abre /cotizaciones/{folio}\n(estado "Pendiente")
+  end
+end
+@enduml

@@ -1,0 +1,76 @@
+@startuml
+title Secuencia 3 - El asesor envía la cotización al cliente (Épica: Gestión y elaboración de cotizaciones · HU-06, HU-07, HU-08)
+skinparam shadowing false
+autonumber
+
+actor Asesor as U
+participant "EditorCotizacion.jsx" as UI
+participant "asesorApi" as Api
+participant "routes/asesor.js\n(+ autenticar, requerirRol)" as Ruta
+participant "CotizacionFacade\n<<Facade>>" as F
+participant "EstadoCotizacion\n<<State>>" as St
+participant "CalculadoraCotizacion\n<<Strategy>>" as Calc
+participant "PublicadorEventos\n<<Observer>>" as Pub
+participant "HistorialObserver" as Hist
+participant "NotificacionCorreo\nObserver" as Mail
+database "SQLite" as BD
+
+U -> UI : edita ítems y descuentos,\npulsa "Enviar al Cliente"
+UI -> Api : enviar(folio, {items, notas, validez_dias})
+Api -> Ruta : POST /api/asesor/solicitudes/{folio}/enviar
+Ruta -> Ruta : edicionSchema.parse(body) (Zod)
+alt datos inválidos (sin ítems, cantidad < 1, descuento > 100)
+  Ruta --> Api : 400 {error, campos}
+  Api --> UI : ApiError(400)
+  UI --> U : aviso con el error
+else datos válidos
+  Ruta -> F : enviar(folio, datos, asesorId)
+  F -> BD : BEGIN
+  F -> BD : SELECT cotización por folio
+  alt no existe
+    F --> Ruta : HttpError 404
+    Ruta --> Api : 404 "No encontramos esa cotización."
+  else existe
+    F -> St : estadoDe(c.estado).enviar()
+    alt estado Enviada, Aprobada, Rechazada o Vencida
+      St --> F : HttpError 409
+      F -> BD : ROLLBACK
+      F --> Ruta : 409
+      Ruta --> Api : 409 "...no se puede enviar de nuevo."
+      Api --> UI : ApiError(409)
+      UI --> U : aviso (el editor queda en solo lectura)
+    else Por Cotizar o Borrador
+      St --> F : 'Enviada'
+      F -> BD : reemplaza ítems, notas y validez
+      F -> Calc : excedidos(ítems)\n[DescuentoPorLineaConTope(15%)]
+      Calc --> F : ítems con descuento > 15%
+      alt algún ítem supera el 15% (RN-01)
+        F -> BD : ROLLBACK (no se guarda nada)
+        F --> Ruta : HttpError 422 + nombres de los ítems
+        Ruta --> Api : 422 "Hay descuentos por encima del 15%..."
+        Api --> UI : ApiError(422, detalle)
+        UI --> U : aviso indicando qué ítem corregir
+      else algún ítem sin cantidad o precio
+        F -> BD : ROLLBACK
+        F --> Ruta : HttpError 422
+        Ruta --> Api : 422 "Todos los ítems deben tener cantidad y precio."
+      else todo válido
+        F -> BD : UPDATE fecha_envio = hoy, asesor_id
+        F -> BD : UPDATE estado = 'Enviada'
+        F -> Pub : publicar(estadoCambiado, Por Cotizar/Borrador → Enviada)
+        Pub -> Hist : actualizar(...)
+        Hist -> BD : INSERT cotizacion_historial
+        Pub -> Mail : actualizar(...)
+        Mail -> Mail : registra "Tu cotización está lista\npara revisión" (correo simulado)
+        F -> BD : COMMIT
+        Ruta -> F : obtenerParaAsesor(folio)
+        F -> Calc : calcular(ítems) → subtotal, descuentos, IVA 19%, total
+        F --> Ruta : cotización con totales
+        Ruta --> Api : 200 (estado 'Enviada', editable = false)
+        Api --> UI : cotización
+        UI --> U : "Cotización enviada a {correo}"\ny vuelve al listado
+      end
+    end
+  end
+end
+@enduml

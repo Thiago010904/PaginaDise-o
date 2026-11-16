@@ -1,0 +1,76 @@
+@startuml
+title Secuencia 4 - El comprador aprueba la cotización (Épica: Seguimiento y decisión · HU-04, HU-05)
+skinparam shadowing false
+autonumber
+
+actor Comprador as U
+participant "CotizacionDetalle.jsx" as UI
+participant "cotizacionesApi" as Api
+participant "routes/cotizaciones.js\n(+ autenticar, requerirRol)" as Ruta
+participant "CotizacionFacade\n<<Facade>>" as F
+participant "EstadoCotizacion\n<<State>>" as St
+participant "PublicadorEventos\n<<Observer>>" as Pub
+participant "DocumentoCotizacion\nBuilder <<Builder>>" as B
+database "SQLite" as BD
+
+U -> UI : abre la cotización
+UI -> Api : obtener(folio)
+Api -> Ruta : GET /api/cotizaciones/{folio}
+Ruta -> F : obtenerParaComprador(folio, user)
+F -> BD : SELECT cotización del comprador + ítems
+F -> B : conEncabezado().conCliente().conLineas()\n.conTotales().conCondiciones().construir()
+B --> F : documento formal (USD)
+F --> Ruta : documento (puede_decidir = true)
+Ruta --> Api : 200
+Api --> UI : documento
+UI --> U : muestra la cotización y los botones\n"Aprobar" / "Rechazar"
+
+U -> UI : pulsa "Aprobar Cotización"
+UI -> Api : decidir(folio, 'Aprobada')
+Api -> Ruta : POST /api/cotizaciones/{folio}/decision
+Ruta -> Ruta : valida decision ∈ {Aprobada, Rechazada} (Zod)
+Ruta -> F : decidir(folio, comprador, 'Aprobada')
+F -> BD : SELECT cotización WHERE folio = ? AND solicitante = comprador
+alt no existe o es de otra empresa
+  F --> Ruta : HttpError 404
+  Ruta --> Api : 404
+  Api --> UI : ApiError(404)
+  UI --> U : aviso de error
+else es suya
+  opt hoy > fecha_envio + validez (RN-03)
+    F -> St : estadoDe('Enviada').vencer()
+    St --> F : 'Vencida'
+    F -> BD : UPDATE estado = 'Vencida' (se confirma de inmediato)
+    F -> Pub : publicar(Enviada → Vencida)\n→ historial + correo simulado
+  end
+  F -> BD : BEGIN
+  F -> St : estadoDe(estado).decidir('Aprobada')
+  alt estado Vencida
+    St --> F : HttpError 409
+    F -> BD : ROLLBACK (el paso a Vencida ya quedó guardado)
+    F --> Ruta : 409
+    Ruta --> Api : 409 "Esta cotización venció. Crea una nueva solicitud."
+    Api --> UI : ApiError(409)
+    UI --> U : aviso y recarga: ahora aparece "Vencida"
+  else estado Por Cotizar o Borrador
+    St --> F : HttpError 409 "Aún no está lista para tu decisión."
+    F -> BD : ROLLBACK
+    F --> Ruta : 409
+  else estado Aprobada o Rechazada
+    St --> F : HttpError 409 "Ya fue aprobada / rechazada."
+    F -> BD : ROLLBACK
+    F --> Ruta : 409
+  else estado Enviada (vigente)
+    St --> F : 'Aprobada'
+    F -> BD : UPDATE estado = 'Aprobada'
+    F -> Pub : publicar(Enviada → Aprobada)\n→ historial + correo al asesor (simulado)
+    F -> BD : COMMIT
+    F --> Ruta : 'Aprobada'
+    Ruta --> Api : 200 {folio, estado: 'Aprobada'}
+    Api --> UI : ok
+    UI -> Api : obtener(folio)  (recargar)
+    Api --> UI : documento con estado 'Aprobada'
+    UI --> U : "Cotización aprobada" y los botones desaparecen
+  end
+end
+@enduml
