@@ -1,8 +1,10 @@
 // npm run db:reset -> BORRA la base y la vuelve a crear con los datos del front
 import { rmSync, readFileSync } from 'node:fs'
-import { scryptSync, randomBytes } from 'node:crypto'
-import { abrirDb, aplicarEsquema, transaccion, DB_PATH } from './db.js'
+import { hashPassword } from '../utils/passwords.js'
+import { abrirDb, aplicarEsquema, transaccion, DB_PATH, db as compartida } from './db.js'
 
+// db.js abre la base al importarse; en Windows no se puede borrar un archivo abierto
+compartida.close()
 for (const ext of ['', '-wal', '-shm']) rmSync(DB_PATH + ext, { force: true })
 const db = abrirDb()
 aplicarEsquema(db)
@@ -10,11 +12,6 @@ aplicarEsquema(db)
 const seed = JSON.parse(readFileSync(new URL('./seed-data.json', import.meta.url), 'utf8'))
 const { config } = seed
 
-// Formato: scrypt$salt$hash  (sin dependencias externas)
-const hashPassword = (pw) => {
-  const salt = randomBytes(16).toString('hex')
-  return `scrypt$${salt}$${scryptSync(pw, salt, 64).toString('hex')}`
-}
 const sinPais = (c) => (c || '').replace(/,\s*Colombia$/, '')
 
 transaccion(db, () => {
