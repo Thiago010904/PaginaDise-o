@@ -9,6 +9,7 @@ package "Frontend - React / Vite" {
   component "Interfaz Asesor\n(BandejaSolicitudes,\nEditorCotizacion)" as Asesor
   component "AuthContext" as Auth
   component "CotizacionesContext" as Cotizaciones
+  component "Exportacion PDF\n(window.print + estilos print)" as PDF
 }
 
 package "Datos actuales" {
@@ -26,6 +27,8 @@ Comprador --> Auth : Autenticacion
 Comprador --> Cotizaciones : Consultar / solicitar
 Asesor --> Auth : Verificar rol
 Asesor --> Cotizaciones : Gestionar / cotizar
+Comprador --> PDF : Descargar PDF
+Asesor --> PDF : Exportar PDF
 
 Auth --> Datos : Lee usuarios
 Cotizaciones --> Memoria : Administra datos

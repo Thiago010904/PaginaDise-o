@@ -1,0 +1,53 @@
+@startuml
+title CotizaTech - Diagrama UML de Despliegue
+skinparam shadowing false
+
+node "Dispositivo del usuario\n(PC / portatil)" <<device>> as Dispositivo {
+  node "Navegador web\n(Chrome / Edge / Firefox)" <<execution environment>> as Navegador {
+    artifact "cotizatech SPA\n(React 19 + React Router)" as SPA
+    component "AuthContext" as Auth
+    component "CotizacionesContext\n(datos en memoria)" as Ctx
+    component "Exportacion PDF\n(window.print + estilos print)" as PDF
+  }
+}
+
+node "Servidor web estatico" <<device>> as ServidorWeb {
+  node "Vite\n(dev: npm run dev / prod: npm run build)" <<execution environment>> as Vite {
+    artifact "dist/\n(index.html, JS, CSS,\nfavicon.svg, icons.svg)" as Dist
+  }
+}
+
+package "Infraestructura proyectada - Entregable 3" #FFF3DB {
+  node "Servidor de aplicaciones" <<device>> as ServidorApp {
+    node "Entorno de ejecucion backend" <<execution environment>> as Runtime {
+      artifact "Backend / API REST" as API
+    }
+  }
+  node "Servidor de base de datos" <<device>> as ServidorBD {
+    database "Base de datos\n(usuarios, productos,\nsolicitudes, cotizaciones)" as BD
+  }
+  node "Proveedor de correo\n(servicio externo)" <<external>> as Correo
+}
+
+Dist ..> SPA : <<deploy>>
+SPA --> Auth
+SPA --> Ctx
+SPA --> PDF
+
+Navegador --> Vite : HTTP / HTTPS\n(descarga de la SPA)
+Navegador ..> ServidorApp : HTTPS / JSON\n(proyectado)
+ServidorApp ..> ServidorBD : SQL / TCP\n(proyectado)
+ServidorApp ..> Correo : SMTP\n(proyectado)
+
+note right of Dispositivo
+  MVP actual: toda la logica y los datos
+  se ejecutan en el navegador; al recargar
+  la pagina los datos se reinician.
+end note
+
+note right of ServidorBD
+  Nodos proyectados (fuera del MVP actual,
+  segun el Entregable 2). Confirmar tecnologia
+  con el equipo antes de entregar.
+end note
+@enduml
