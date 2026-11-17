@@ -9,6 +9,8 @@ import { noEncontrada, manejarErrores } from './middleware/errores.js'
 import auth from './routes/auth.js'
 import productos from './routes/productos.js'
 import carrito from './routes/carrito.js'
+import cotizaciones from './routes/cotizaciones.js'
+import asesor from './routes/asesor.js'
 
 export function crearApp() {
   const app = express()
@@ -29,6 +31,8 @@ export function crearApp() {
   app.use('/api/auth', auth)
   app.use('/api/productos', productos)
   app.use('/api/carrito', carrito)
+  app.use('/api/cotizaciones', cotizaciones)
+  app.use('/api/asesor', asesor)
   app.use('/api', noEncontrada)
 
   // En producción el mismo servidor entrega el front compilado (npm run build)
