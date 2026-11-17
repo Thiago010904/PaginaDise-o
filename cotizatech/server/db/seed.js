@@ -1,6 +1,7 @@
 // npm run db:reset -> BORRA la base y la vuelve a crear con los datos del front
 import { rmSync, readFileSync } from 'node:fs'
 import { hashPassword } from '../utils/passwords.js'
+import { hoy } from '../utils/fechas.js'
 import { abrirDb, aplicarEsquema, transaccion, DB_PATH, db as compartida } from './db.js'
 
 // db.js abre la base al importarse; en Windows no se puede borrar un archivo abierto
@@ -58,7 +59,8 @@ transaccion(db, () => {
     VALUES (@folio, @empresa_id, @solicitante_id, @asesor_id, @estado, @fecha, @fecha_envio, @validez, @notas, @descuento_adicional, @iva_pct, @trm)`)
   const iInsert = db.prepare(`INSERT INTO cotizacion_items (cotizacion_id, producto_id, orden, nombre, descripcion, cantidad, precio_unitario, descuento_pct)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
-  const envio = (estado, fecha) => (['Por Cotizar', 'Borrador'].includes(estado) ? null : fecha)
+  // Las 'Enviada' se marcan como enviadas HOY para que sigan vigentes en la demo (RN-03 vence a los N días)
+  const envio = (estado, fecha) => (['Por Cotizar', 'Borrador'].includes(estado) ? null : estado === 'Enviada' ? hoy() : fecha)
   const asesor = (estado) => (estado === 'Por Cotizar' ? null : asesorId)
   const base = { validez: 30, notas: config.notas_default, iva_pct: config.iva_pct, trm: config.trm }
 
