@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { useCotizaciones } from '../../context/CotizacionesContext.jsx'
 import { Campo } from '../../components/AuthLayout.jsx'
-import { SECTORES } from '../../data/solicitudes.js'
+import { SECTORES } from '../../utils/formato.js'
 
 const CAMPOS = [
   ['empresa', 'Nombre de la Empresa'], ['nit', 'NIT / RUT'], ['direccion', 'Dirección Corporativa'], ['ciudad', 'Ciudad'],
@@ -11,15 +11,24 @@ const CAMPOS = [
 
 export default function Perfil() {
   const { user, actualizarPerfil } = useAuth()
-  const { avisar } = useCotizaciones()
+  const { avisar, avisarError } = useCotizaciones()
   const [f, setF] = useState(() => Object.fromEntries([...CAMPOS.map(([k]) => [k, user[k] || '']), ['sector', user.sector || '']]))
+  const [guardando, setGuardando] = useState(false)
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
 
-  const guardar = (e) => {
+  // PATCH /api/auth/perfil. Flujo alternativo: si el NIT ya es de otra empresa el back responde 409
+  const guardar = async (e) => {
     e.preventDefault()
-    if (!f.nombre.trim() || !f.empresa.trim()) return avisar('El nombre de la empresa y del representante son obligatorios')
-    actualizarPerfil(f)
-    avisar('Perfil actualizado')
+    if (!f.nombre.trim() || !f.empresa.trim() || !f.nit.trim()) return avisar('La empresa, el NIT y el representante son obligatorios', 'error')
+    setGuardando(true)
+    try {
+      await actualizarPerfil(f)
+      avisar('Perfil actualizado')
+    } catch (err) {
+      avisarError(err)
+    } finally {
+      setGuardando(false)
+    }
   }
 
   return (
@@ -52,7 +61,9 @@ export default function Perfil() {
         </div>
 
         <div className="mt-6 flex justify-end">
-          <button type="submit" className="h-9 rounded-lg bg-brand px-6 text-xs font-semibold text-white hover:bg-blue-700">Guardar cambios</button>
+          <button type="submit" disabled={guardando} className="h-9 rounded-lg bg-brand px-6 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
+            {guardando ? 'Guardando...' : 'Guardar cambios'}
+          </button>
         </div>
       </form>
     </>
