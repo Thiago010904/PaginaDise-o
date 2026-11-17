@@ -16,8 +16,13 @@ import EditorCotizacion from './pages/asesor/EditorCotizacion.jsx'
 import Clientes from './pages/asesor/Clientes.jsx'
 import Reportes from './pages/asesor/Reportes.jsx'
 
+function Cargando() {
+  return <div className="grid min-h-screen place-items-center bg-slate-50 text-xs text-slate-500">Cargando...</div>
+}
+
 function RequireAuth({ children }) {
-  const { user } = useAuth()
+  const { user, verificando } = useAuth()
+  if (verificando) return <Cargando />   // esperando a /api/auth/me
   return user ? children : <Navigate to="/login" replace />
 }
 
@@ -47,7 +52,7 @@ export default function App() {
             <Route path="/asesor" element={asesor(<PanelAsesor />)} />
             <Route path="/asesor/solicitudes" element={asesor(<BandejaSolicitudes />)} />
             <Route path="/asesor/cotizaciones" element={asesor(<CotizacionesAsesor />)} />
-            <Route path="/asesor/cotizaciones/:id" element={asesor(<EditorCotizacion />)} />
+            <Route path="/asesor/cotizaciones/:folio" element={asesor(<EditorCotizacion />)} />
             <Route path="/asesor/clientes" element={asesor(<Clientes />)} />
             <Route path="/asesor/reportes" element={asesor(<Reportes />)} />
           </Route>

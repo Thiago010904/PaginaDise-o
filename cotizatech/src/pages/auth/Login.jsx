@@ -5,7 +5,7 @@ import AuthLayout, { Campo, Mensajes } from '../../components/AuthLayout.jsx'
 import { Mail, Lock, Eye, EyeOff, Globe } from 'lucide-react'
 
 export default function Login() {
-  const { user, login, loginSSO } = useAuth()
+  const { user, login } = useAuth()
   const registrado = useLocation().state?.registrado
   const [show, setShow] = useState(false)
   const [remember, setRemember] = useState(true)
@@ -23,12 +23,11 @@ export default function Login() {
     setError(''); setInfo('')
     if (!email || !password) return setError('Ingresa tu correo y tu contraseña.')
     setLoading(true)
-    setTimeout(() => {
-      if (!login(email, password)) {
-        setLoading(false)
-        setError('Correo o contraseña incorrectos.')
-      }
-    }, 600)
+    // Si sale bien, AuthContext guarda el usuario y el <Navigate> de arriba lo lleva a su inicio
+    login(email, password).catch((err) => {
+      setLoading(false)
+      setError(err.message)
+    })
   }
 
   const olvido = (e) => {
@@ -37,9 +36,10 @@ export default function Login() {
     setInfo(email ? `Enviamos instrucciones para restablecer tu contraseña a ${email}.` : 'Escribe tu correo corporativo para recuperar tu contraseña.')
   }
 
+  // El inicio con Google Workspace está fuera del alcance del MVP
   const sso = () => {
-    setLoading(true); setError(''); setInfo('')
-    setTimeout(loginSSO, 700)
+    setError('')
+    setInfo('El ingreso con Google Workspace estará disponible en una próxima versión. Usa tu correo y contraseña.')
   }
 
   return (

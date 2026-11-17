@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth, inicio } from '../../context/AuthContext.jsx'
 import AuthLayout, { Campo, Mensajes } from '../../components/AuthLayout.jsx'
-import { SECTORES } from '../../data/solicitudes.js'
+import { SECTORES } from '../../utils/formato.js'
 
 const vacio = {
   empresa: '', nit: '', sector: '', direccion: '', ciudad: '', pais: 'Colombia', telefono: '', email: '',
@@ -14,6 +14,7 @@ export default function Registro() {
   const navigate = useNavigate()
   const [f, setF] = useState(vacio)
   const [error, setError] = useState('')
+  const [enviando, setEnviando] = useState(false)
 
   if (user) return <Navigate to={inicio(user)} replace />
 
@@ -22,7 +23,7 @@ export default function Registro() {
     <Campo className="" label={label} placeholder={placeholder} value={f[k]} onChange={set(k)} {...extra} />
   )
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
     setError('')
     const faltan = Object.entries(f).some(([k, v]) => k !== 'terminos' && !String(v).trim())
@@ -31,9 +32,16 @@ export default function Registro() {
     if (f.password.length < 8) return setError('La contraseña debe tener al menos 8 caracteres.')
     if (f.password !== f.confirmar) return setError('Las contraseñas no coinciden.')
     if (!f.terminos) return setError('Debes aceptar los Términos de Servicio y la Política de Privacidad.')
-    const r = registrar(f)
-    if (!r.ok) return setError(r.error)
-    navigate('/login', { state: { registrado: f.email.trim().toLowerCase() } })
+    // Validaciones de arriba = ayuda rápida; el back vuelve a validar todo (NIT, correo duplicado...)
+    const { confirmar: _confirmar, ...datos } = f
+    setEnviando(true)
+    try {
+      const r = await registrar(datos)
+      navigate('/login', { state: { registrado: r.email } })
+    } catch (err) {
+      setError(err.message)
+      setEnviando(false)
+    }
   }
 
   return (
@@ -70,8 +78,8 @@ export default function Registro() {
           <span>Acepto los <a href="#" className="font-semibold text-brand">Términos de Servicio</a> y la <a href="#" className="font-semibold text-brand">Política de Privacidad</a> de CotizaTech.</span>
         </label>
 
-        <button type="submit" className="h-10 w-full rounded-lg bg-brand text-xs font-semibold text-white transition hover:bg-blue-700 sm:col-span-2">
-          Crear Cuenta Empresarial
+        <button type="submit" disabled={enviando} className="h-10 w-full rounded-lg bg-brand text-xs font-semibold text-white transition hover:bg-blue-700 disabled:opacity-60 sm:col-span-2">
+          {enviando ? 'Creando cuenta...' : 'Crear Cuenta Empresarial'}
         </button>
       </form>
 
