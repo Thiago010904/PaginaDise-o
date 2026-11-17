@@ -1,79 +1,70 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { useAuth } from './AuthContext.jsx'
-import { productos } from '../data/productos.js'
-import { cotizacionesIniciales } from '../data/cotizaciones.js'
-import { solicitudesIniciales, itemDesdeProducto, NOTAS_DEFAULT } from '../data/solicitudes.js'
+import { carritoApi } from '../api/catalogo.js'
+import { cotizacionesApi } from '../api/cotizaciones.js'
 
 const Ctx = createContext(null)
+const CARRITO_VACIO = { items: [], cantidad: 0, total_usd: 0 }
 
-const hoy = () => {
-  const h = new Date()
-  return `${h.getFullYear()}-${String(h.getMonth() + 1).padStart(2, '0')}-${String(h.getDate()).padStart(2, '0')}`
-}
-
+// Estado compartido de la interfaz: carrito del comprador (guardado en el back),
+// búsqueda del catálogo, panel lateral del carrito y avisos (toast).
 export function CotizacionesProvider({ children }) {
-  const [carrito, setCarrito] = useState([{ id: 1, qty: 1 }, { id: 3, qty: 1 }, { id: 5, qty: 1 }])
   const { user } = useAuth()
-  const [todas, setCotizaciones] = useState(cotizacionesIniciales)
-  const [solicitudes, setSolicitudes] = useState(solicitudesIniciales)
   const esAsesor = user?.rol === 'asesor'
-  // El comprador solo ve sus propias cotizaciones
-  const cotizaciones = todas.filter((c) => c.email === user?.email)
+  const [carrito, setCarrito] = useState(CARRITO_VACIO)
   const [cartOpen, setCartOpen] = useState(false)
   const [busqueda, setBusqueda] = useState('')
-  const [toast, setToast] = useState('')
+  const [toast, setToast] = useState(null)
 
   useEffect(() => {
     if (!toast) return
-    const t = setTimeout(() => setToast(''), 2200)
+    const t = setTimeout(() => setToast(null), 2600)
     return () => clearTimeout(t)
   }, [toast])
 
-  const lineas = carrito.map((l) => ({ ...productos.find((p) => p.id === l.id), qty: l.qty }))
-  const count = carrito.reduce((a, l) => a + l.qty, 0)
-  const total = lineas.reduce((a, l) => a + l.precio * l.qty, 0)
+  // Avisos: avisar('Listo') o avisar('Algo falló', 'error')
+  const avisar = useCallback((texto, tipo = 'ok') => setToast({ texto, tipo }), [])
+  const avisarError = useCallback((e) => setToast({ texto: e.message, tipo: 'error' }), [])
 
-  const agregar = (p) => {
-    setCarrito((c) => c.some((l) => l.id === p.id) ? c.map((l) => (l.id === p.id ? { ...l, qty: l.qty + 1 } : l)) : [...c, { id: p.id, qty: 1 }])
-    setToast(`${p.nombre} agregado a la cotización`)
+  // El carrito se carga del back cuando entra un comprador
+  useEffect(() => {
+    if (!user || esAsesor) { setCarrito(CARRITO_VACIO); return }
+    carritoApi.obtener().then(setCarrito).catch(avisarError)
+  }, [user, esAsesor, avisarError])
+
+  const agregar = async (p) => {
+    try {
+      setCarrito(await carritoApi.agregar(p.id))
+      avisar(`${p.nombre} agregado a la cotización`)
+    } catch (e) { avisarError(e) }
   }
-  const cambiarQty = (id, d) => setCarrito((c) => c.map((l) => (l.id === id ? { ...l, qty: l.qty + d } : l)).filter((l) => l.qty > 0))
-  const quitar = (id) => setCarrito((c) => c.filter((l) => l.id !== id))
+  const cambiarQty = async (productoId, delta) => {
+    try { setCarrito(await carritoApi.cambiarCantidad(productoId, delta)) } catch (e) { avisarError(e) }
+  }
+  const quitar = async (productoId) => {
+    try { setCarrito(await carritoApi.quitar(productoId)) } catch (e) { avisarError(e) }
+  }
 
-  // Crea una cotización nueva (queda "Pendiente"), la envía a la bandeja del asesor y devuelve su folio
-  const enviar = () => {
-    if (esAsesor || !carrito.length) return null
-    const num = Math.max(...todas.map((c) => parseInt(c.folio.slice(4), 10))) + 1
-    const folio = `COT-${String(num).padStart(5, '0')}`
-    const fecha = hoy()
-    setCotizaciones((c) => [{ folio, fecha, estado: 'Pendiente', lineas: carrito, descuento: 0, email: user.email, solicitante: user.nombre }, ...c])
-    const cliente = {
-      nombre: user.empresa || user.nombre, corto: user.empresa || user.nombre, nit: user.nit || '—', contacto: user.nombre, email: user.email,
-      direccion: user.direccion || '—', ciudad: [user.ciudad, user.pais].filter(Boolean).join(', ') || '—', sector: user.sector || '—',
+  // Envía la solicitud con lo que hay en el carrito y devuelve el folio creado
+  const enviar = async () => {
+    try {
+      const { folio } = await cotizacionesApi.solicitar()
+      setCarrito(CARRITO_VACIO)
+      setCartOpen(false)
+      avisar(`Solicitud ${folio} enviada al asesor`)
+      return folio
+    } catch (e) {
+      avisarError(e)
+      return null
     }
-    const items = lineas.map((l) => itemDesdeProducto(l, l.qty))
-    setSolicitudes((s) => [{ id: `SOL-${folio.slice(4)}`, folio, cliente, fecha, estado: 'Por Cotizar', items, validez: 30, notas: NOTAS_DEFAULT }, ...s])
-    setCarrito([]); setCartOpen(false)
-    setToast('Cotización enviada a los proveedores')
-    return folio
-  }
-
-  // El comprador aprueba o rechaza sus propias cotizaciones pendientes
-  const cambiarEstado = (folio, estado) => {
-    if (esAsesor) return
-    setCotizaciones((c) => c.map((x) => (x.folio === folio && x.email === user.email ? { ...x, estado } : x)))
-    setToast(`Cotización #${folio} ${estado.toLowerCase()}`)
-  }
-
-  // El asesor edita, guarda, envía o rechaza solicitudes
-  const actualizarSolicitud = (id, cambios, mensaje) => {
-    if (!esAsesor) return
-    setSolicitudes((s) => s.map((x) => (x.id === id ? { ...x, ...cambios } : x)))
-    if (mensaje) setToast(mensaje)
   }
 
   return (
-    <Ctx.Provider value={{ esAsesor, carrito, lineas, count, total, cotizaciones, solicitudes, cartOpen, setCartOpen, busqueda, setBusqueda, toast, avisar: setToast, agregar, cambiarQty, quitar, enviar, cambiarEstado, actualizarSolicitud }}>
+    <Ctx.Provider value={{
+      esAsesor, carrito, count: carrito.cantidad, total: carrito.total_usd, lineas: carrito.items,
+      cartOpen, setCartOpen, busqueda, setBusqueda, toast, avisar, avisarError,
+      agregar, cambiarQty, quitar, enviar,
+    }}>
       {children}
     </Ctx.Provider>
   )

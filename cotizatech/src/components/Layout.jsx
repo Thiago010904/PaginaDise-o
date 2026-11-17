@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useCotizaciones } from '../context/CotizacionesContext.jsx'
-import { fmt } from '../data/cotizaciones.js'
-import { FileText, LayoutDashboard, ShoppingBag, UserCog, Search, Bell, ChevronDown, Plus, Minus, Trash2, X, CircleHelp, LogOut, CheckCircle2, Inbox, FilePen, Users, BarChart3 } from 'lucide-react'
+import { asesorApi } from '../api/asesor.js'
+import { fmt } from '../utils/formato.js'
+import { FileText, LayoutDashboard, ShoppingBag, UserCog, Search, Bell, ChevronDown, Plus, Minus, Trash2, X, CircleHelp, LogOut, CheckCircle2, AlertCircle, Inbox, FilePen, Users, BarChart3 } from 'lucide-react'
 
 const iniciales = (n) => n.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()
 const navComprador = [
@@ -20,17 +21,23 @@ const navAsesor = [
   { label: 'Reportes de Ventas', icon: BarChart3, to: '/asesor/reportes' },
 ]
 const notificaciones = [
-  'Tu proveedor Dell respondió la cotización COT-00125.',
+  'Revisa en "Mis Cotizaciones" las propuestas que ya puedes aprobar.',
   'Nuevo producto homologado: Cisco Catalyst 9200L.',
 ]
 
 export default function Layout() {
   const { user, logout } = useAuth()
-  const { esAsesor, solicitudes, busqueda, setBusqueda, count, total, lineas, cartOpen, setCartOpen, cambiarQty, quitar, enviar, toast } = useCotizaciones()
+  const { esAsesor, busqueda, setBusqueda, count, total, lineas, cartOpen, setCartOpen, cambiarQty, quitar, enviar, toast } = useCotizaciones()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [menu, setMenu] = useState(null)
-  const porCotizar = solicitudes.filter((s) => s.estado === 'Por Cotizar').length
+  const [porCotizar, setPorCotizar] = useState(0)
+
+  // Aviso del asesor: cuántas solicitudes esperan en la bandeja (se actualiza al cambiar de página)
+  useEffect(() => {
+    if (!esAsesor) return
+    asesorApi.solicitudes({ estado: 'Por Cotizar', por_pagina: 1 }).then((r) => setPorCotizar(r.total)).catch(() => {})
+  }, [esAsesor, pathname])
   const avisos = esAsesor
     ? [porCotizar ? `Tienes ${porCotizar} ${porCotizar === 1 ? 'solicitud' : 'solicitudes'} por cotizar en la bandeja.` : 'No tienes solicitudes por cotizar.']
     : notificaciones
@@ -39,8 +46,8 @@ export default function Layout() {
     setBusqueda(v)
     if (pathname !== '/catalogo') navigate('/catalogo')
   }
-  const onEnviar = () => {
-    const folio = enviar()
+  const onEnviar = async () => {
+    const folio = await enviar()
     if (folio) navigate(`/cotizaciones/${folio}`)
   }
 
@@ -120,17 +127,17 @@ export default function Layout() {
             </div>
             <div className="flex-1 overflow-y-auto px-5">
               {lineas.length ? lineas.map((l) => (
-                <div key={l.id} className="flex items-center gap-3 border-b border-slate-100 py-4">
+                <div key={l.producto_id} className="flex items-center gap-3 border-b border-slate-100 py-4">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-xs font-semibold">{l.nombre}</p>
-                    <p className="text-[11px] text-slate-500">USD ${fmt(l.precio)}</p>
+                    <p className="text-[11px] text-slate-500">USD ${fmt(l.precio_usd)}</p>
                   </div>
                   <div className="flex items-center gap-2 rounded-lg border border-slate-200 px-1.5 py-1">
-                    <button onClick={() => cambiarQty(l.id, -1)} aria-label="Menos"><Minus size={12} /></button>
-                    <span className="w-4 text-center text-xs font-semibold">{l.qty}</span>
-                    <button onClick={() => cambiarQty(l.id, 1)} aria-label="Más"><Plus size={12} /></button>
+                    <button onClick={() => cambiarQty(l.producto_id, -1)} aria-label="Menos"><Minus size={12} /></button>
+                    <span className="w-4 text-center text-xs font-semibold">{l.cantidad}</span>
+                    <button onClick={() => cambiarQty(l.producto_id, 1)} aria-label="Más"><Plus size={12} /></button>
                   </div>
-                  <button onClick={() => quitar(l.id)} className="text-slate-400 hover:text-red-500" aria-label="Quitar"><Trash2 size={14} /></button>
+                  <button onClick={() => quitar(l.producto_id)} className="text-slate-400 hover:text-red-500" aria-label="Quitar"><Trash2 size={14} /></button>
                 </div>
               )) : <p className="py-16 text-center text-xs text-slate-500">Tu cotización está vacía. Agrega productos desde el catálogo.</p>}
             </div>
@@ -144,7 +151,7 @@ export default function Layout() {
 
       {toast && (
         <div role="status" className="fixed bottom-6 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs font-medium text-white shadow-lg print:hidden">
-          <CheckCircle2 size={14} className="text-emerald-400" /> {toast}
+          {toast.tipo === 'error' ? <AlertCircle size={14} className="text-red-400" /> : <CheckCircle2 size={14} className="text-emerald-400" />} {toast.texto}
         </div>
       )}
     </div>

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useCotizaciones } from '../../context/CotizacionesContext.jsx'
-import { productos } from '../../data/productos.js'
-import { fmt } from '../../data/cotizaciones.js'
+import { productosApi } from '../../api/catalogo.js'
+import { useApi } from '../../hooks/useApi.js'
+import { fmt } from '../../utils/formato.js'
+import { iconoProducto } from '../../utils/iconos.js'
 import { ShoppingCart, Plus, PackageSearch } from 'lucide-react'
 
 const tabs = ['Hardware', 'Software', 'Servicios']
@@ -17,6 +19,11 @@ export default function Catalogo() {
   const { agregar, busqueda, setBusqueda, count, setCartOpen } = useCotizaciones()
   const [tab, setTab] = useState('Hardware')
   const [filtros, setFiltros] = useState(vacio)
+  // Se trae el catálogo completo una vez (20 productos) y se filtra aquí para que los filtros respondan al instante
+  const { datos, cargando, error, recargar } = useApi(() => productosApi.listar(), [])
+  const productos = (datos?.items || []).map((p) => ({
+    ...p, tab: p.tipo, sub: p.subcategoria, desc: p.descripcion, precio: p.precio_usd, stock: p.disponibilidad, icon: iconoProducto(p.icono),
+  }))
 
   const delTab = productos.filter((p) => p.tab === tab)
   const subs = [...new Set(delTab.map((p) => p.sub))]
@@ -81,7 +88,13 @@ export default function Catalogo() {
           ))}
         </aside>
 
-        {visibles.length ? (
+        {cargando ? (
+          <p className="flex-1 py-16 text-center text-xs text-slate-500">Cargando catálogo...</p>
+        ) : error ? (
+          <div className="flex-1 py-16 text-center text-xs text-red-600">
+            {error.message} <button onClick={recargar} className="ml-2 font-semibold text-brand">Reintentar</button>
+          </div>
+        ) : visibles.length ? (
           <div className="grid flex-1 grid-cols-1 gap-4 self-start sm:grid-cols-2 xl:grid-cols-3">
             {visibles.map((p) => {
               const Icon = p.icon
