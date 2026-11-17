@@ -1,8 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { FileText, CheckCircle2, DollarSign, Clock, Plus, ShoppingBag, Cpu, XCircle, Send } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext.jsx'
-import { useCotizaciones } from '../../context/CotizacionesContext.jsx'
-import { calcular, fmt, fmtFecha } from '../../data/cotizaciones.js'
+import { cotizacionesApi } from '../../api/cotizaciones.js'
+import { useApi } from '../../hooks/useApi.js'
+import { fmt, fmtFecha } from '../../utils/formato.js'
 import EstadoBadge from '../../components/EstadoBadge.jsx'
 import KpiCard from '../../components/KpiCard.jsx'
 
@@ -15,13 +16,10 @@ const actividad = {
 
 export default function Dashboard() {
   const { user } = useAuth()
-  const { cotizaciones } = useCotizaciones()
   const navigate = useNavigate()
-
-  const cuenta = (e) => cotizaciones.filter((c) => c.estado === e).length
-  const aprobadas = cotizaciones.filter((c) => c.estado === 'Aprobada')
-  const montoAprobado = aprobadas.reduce((a, c) => a + calcular(c).total, 0)
-  const recientes = cotizaciones.slice(0, 5)
+  // KPIs y últimas 5 cotizaciones, calculados por el back (GET /api/cotizaciones/resumen)
+  const { datos: r, error } = useApi(() => cotizacionesApi.resumen(), [])
+  const recientes = r?.recientes || []
 
   return (
     <>
@@ -35,11 +33,13 @@ export default function Dashboard() {
         </button>
       </div>
 
+      {error && <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-xs text-red-600">{error.message}</p>}
+
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard icon={FileText} titulo="Cotizaciones Activas" valor={cuenta('Pendiente') + aprobadas.length} nota="Pendientes y aprobadas vigentes" />
-        <KpiCard icon={CheckCircle2} titulo="Aprobadas" valor={aprobadas.length} nota={`${Math.round((aprobadas.length / Math.max(1, cotizaciones.length)) * 100)}% de tus solicitudes`} notaClass="text-emerald-600" />
-        <KpiCard icon={DollarSign} titulo="Monto Total Cotizado" valor={`$${fmt(montoAprobado)}`} unidad="USD" nota="En cotizaciones aprobadas" />
-        <KpiCard icon={Clock} titulo="Solicitudes Pendientes" valor={cuenta('Pendiente')} nota="Esperan tu aprobación" notaClass="text-amber-600" />
+        <KpiCard icon={FileText} titulo="Cotizaciones Activas" valor={r ? r.activas : '—'} nota="Pendientes y aprobadas vigentes" />
+        <KpiCard icon={CheckCircle2} titulo="Aprobadas" valor={r ? r.aprobadas : '—'} nota={`${r?.pct_aprobadas ?? 0}% de tus solicitudes`} notaClass="text-emerald-600" />
+        <KpiCard icon={DollarSign} titulo="Monto Total Cotizado" valor={`$${fmt(r?.monto_aprobado_usd)}`} unidad="USD" nota="En cotizaciones aprobadas" />
+        <KpiCard icon={Clock} titulo="Solicitudes Pendientes" valor={r ? r.pendientes : '—'} nota="En proceso o esperando tu aprobación" notaClass="text-amber-600" />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_300px]">
@@ -63,10 +63,10 @@ export default function Dashboard() {
                   <td className="px-5 py-3"><Link to={`/cotizaciones/${c.folio}`} className="font-semibold text-brand hover:underline">{c.folio}</Link></td>
                   <td className="px-3 py-3">{fmtFecha(c.fecha)}</td>
                   <td className="px-3 py-3"><EstadoBadge estado={c.estado} /></td>
-                  <td className="px-5 py-3 text-right font-semibold">${fmt(calcular(c).total)}</td>
+                  <td className="px-5 py-3 text-right font-semibold">${fmt(c.monto_estimado_usd)}</td>
                 </tr>
               ))}
-              {!recientes.length && <tr><td colSpan={4} className="py-10 text-center text-slate-500">Aún no tienes cotizaciones.</td></tr>}
+              {!recientes.length && <tr><td colSpan={4} className="py-10 text-center text-slate-500">{r ? 'Aún no tienes cotizaciones.' : 'Cargando...'}</td></tr>}
             </tbody>
           </table>
         </div>
@@ -88,7 +88,7 @@ export default function Dashboard() {
             <h2 className="font-display text-sm font-semibold">Actividad Reciente</h2>
             <ul className="mt-4 space-y-4">
               {recientes.slice(0, 4).map((c) => {
-                const a = actividad[c.estado]
+                const a = actividad[c.estado] || actividad.Pendiente
                 return (
                   <li key={c.folio} className="flex gap-3">
                     <div className={`grid size-8 shrink-0 place-items-center rounded-full ${a.color}`}><a.icon size={14} /></div>

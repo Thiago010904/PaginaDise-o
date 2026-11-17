@@ -2,24 +2,38 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { useCotizaciones } from '../../context/CotizacionesContext.jsx'
-import { calcular, fmt, fmtFecha } from '../../data/cotizaciones.js'
+import { cotizacionesApi } from '../../api/cotizaciones.js'
+import { useApi } from '../../hooks/useApi.js'
+import { fmt, fmtFecha } from '../../utils/formato.js'
 import EstadoBadge from '../../components/EstadoBadge.jsx'
 
 const filtros = [['Todas', null], ['Pendientes', 'Pendiente'], ['Aprobadas', 'Aprobada'], ['Rechazadas', 'Rechazada'], ['Vencidas', 'Vencida']]
 const POR_PAGINA = 7
 
 export default function Cotizaciones() {
-  const { cotizaciones, cambiarEstado } = useCotizaciones()
+  const { avisar, avisarError } = useCotizaciones()
   const navigate = useNavigate()
   const [filtro, setFiltro] = useState(null)
   const [pagina, setPagina] = useState(1)
 
-  const lista = cotizaciones.filter((c) => !filtro || c.estado === filtro)
-  const paginas = Math.max(1, Math.ceil(lista.length / POR_PAGINA))
-  const actual = Math.min(pagina, paginas)
-  const filas = lista.slice((actual - 1) * POR_PAGINA, actual * POR_PAGINA)
+  // El back filtra y pagina; "conteos" trae cuántas hay por estado para los botones de filtro
+  const { datos, cargando, error, recargar } = useApi(() => cotizacionesApi.listar({ estado: filtro, pagina, por_pagina: POR_PAGINA }), [filtro, pagina])
+  const filas = datos?.items || []
+  const conteos = datos?.conteos || {}
+  const totalTodas = Object.values(conteos).reduce((a, n) => a + n, 0)
+  const paginas = Math.max(1, Math.ceil((datos?.total || 0) / POR_PAGINA))
 
   const elegir = (f) => { setFiltro(f); setPagina(1) }
+  // Flujo alternativo: si ya venció o ya se decidió, el back responde 409 y se muestra su mensaje
+  const decidir = async (folio, decision) => {
+    try {
+      await cotizacionesApi.decidir(folio, decision)
+      avisar(`Cotización #${folio} ${decision.toLowerCase()}`)
+    } catch (e) {
+      avisarError(e)
+    }
+    recargar()
+  }
   const btn = 'rounded-md px-3 py-1.5 text-[11px] font-semibold'
 
   return (
@@ -36,7 +50,7 @@ export default function Cotizaciones() {
 
       <div className="mt-6 flex flex-wrap gap-2">
         {filtros.map(([label, estado]) => {
-          const n = cotizaciones.filter((c) => !estado || c.estado === estado).length
+          const n = estado ? conteos[estado] || 0 : totalTodas
           const activo = filtro === estado
           return (
             <button key={label} onClick={() => elegir(estado)}
@@ -61,37 +75,38 @@ export default function Cotizaciones() {
             </tr>
           </thead>
           <tbody>
-            {filas.map((c) => {
-              const { items, total } = calcular(c)
-              return (
-                <tr key={c.folio} className="border-t border-slate-100">
-                  <td className="px-5 py-4"><Link to={`/cotizaciones/${c.folio}`} className="font-semibold text-brand hover:underline">#{c.folio}</Link></td>
-                  <td className="px-3 py-4">{fmtFecha(c.fecha)}</td>
-                  <td className="px-3 py-4 text-slate-600">{items} {items === 1 ? 'producto' : 'productos'}</td>
-                  <td className="px-3 py-4 font-semibold">${fmt(total)} USD</td>
-                  <td className="px-3 py-4"><EstadoBadge estado={c.estado} /></td>
-                  <td className="px-5 py-3">
-                    <div className="flex justify-end gap-2">
-                      <button onClick={() => navigate(`/cotizaciones/${c.folio}`)} className={`${btn} bg-slate-100 text-slate-600 hover:bg-slate-200`}>Ver detalle</button>
-                      {c.estado === 'Pendiente' && (
-                        <>
-                          <button onClick={() => cambiarEstado(c.folio, 'Aprobada')} className={`${btn} bg-emerald-500 text-white hover:bg-emerald-600`}>Aprobar</button>
-                          <button onClick={() => cambiarEstado(c.folio, 'Rechazada')} className={`${btn} bg-red-50 text-red-500 hover:bg-red-100`}>Rechazar</button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              )
-            })}
-            {!filas.length && <tr><td colSpan={6} className="py-12 text-center text-slate-500">No hay cotizaciones en este estado.</td></tr>}
+            {filas.map((c) => (
+              <tr key={c.folio} className="border-t border-slate-100">
+                <td className="px-5 py-4"><Link to={`/cotizaciones/${c.folio}`} className="font-semibold text-brand hover:underline">#{c.folio}</Link></td>
+                <td className="px-3 py-4">{fmtFecha(c.fecha)}</td>
+                <td className="px-3 py-4 text-slate-600">{c.num_unidades} {c.num_unidades === 1 ? 'producto' : 'productos'}</td>
+                <td className="px-3 py-4 font-semibold">${fmt(c.monto_estimado_usd)} USD</td>
+                <td className="px-3 py-4"><EstadoBadge estado={c.estado} /></td>
+                <td className="px-5 py-3">
+                  <div className="flex justify-end gap-2">
+                    <button onClick={() => navigate(`/cotizaciones/${c.folio}`)} className={`${btn} bg-slate-100 text-slate-600 hover:bg-slate-200`}>Ver detalle</button>
+                    {c.puede_decidir && (
+                      <>
+                        <button onClick={() => decidir(c.folio, 'Aprobada')} className={`${btn} bg-emerald-500 text-white hover:bg-emerald-600`}>Aprobar</button>
+                        <button onClick={() => decidir(c.folio, 'Rechazada')} className={`${btn} bg-red-50 text-red-500 hover:bg-red-100`}>Rechazar</button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {!filas.length && (
+              <tr><td colSpan={6} className={`py-12 text-center ${error ? 'text-red-600' : 'text-slate-500'}`}>
+                {cargando ? 'Cargando...' : error ? error.message : 'No hay cotizaciones en este estado.'}
+              </td></tr>
+            )}
           </tbody>
         </table>
         <div className="flex items-center justify-between border-t border-slate-100 px-5 py-4 text-xs text-slate-600">
-          <span>Mostrando {filas.length} de {lista.length} cotizaciones</span>
+          <span>Mostrando {filas.length} de {datos?.total ?? 0} cotizaciones</span>
           <div className="flex gap-2">
-            <button disabled={actual === 1} onClick={() => setPagina(actual - 1)} className="rounded-md border border-slate-200 px-3 py-1.5 font-semibold hover:bg-slate-50 disabled:opacity-40">Anterior</button>
-            <button disabled={actual === paginas} onClick={() => setPagina(actual + 1)} className="rounded-md border border-slate-200 px-3 py-1.5 font-semibold hover:bg-slate-50 disabled:opacity-40">Siguiente</button>
+            <button disabled={pagina === 1} onClick={() => setPagina(pagina - 1)} className="rounded-md border border-slate-200 px-3 py-1.5 font-semibold hover:bg-slate-50 disabled:opacity-40">Anterior</button>
+            <button disabled={pagina >= paginas} onClick={() => setPagina(pagina + 1)} className="rounded-md border border-slate-200 px-3 py-1.5 font-semibold hover:bg-slate-50 disabled:opacity-40">Siguiente</button>
           </div>
         </div>
       </div>
