@@ -127,14 +127,9 @@ BEGIN
   UPDATE cotizaciones SET updated_at = datetime('now') WHERE id = NEW.id;
 END;
 
--- Registra cada cambio de estado
-CREATE TRIGGER IF NOT EXISTS trg_cot_historial
-AFTER UPDATE OF estado ON cotizaciones
-FOR EACH ROW WHEN OLD.estado <> NEW.estado
-BEGIN
-  INSERT INTO cotizacion_historial (cotizacion_id, estado_anterior, estado_nuevo)
-  VALUES (NEW.id, OLD.estado, NEW.estado);
-END;
+-- El historial de estados ya NO se llena con un trigger: lo registra el
+-- HistorialObserver del back (patrón Observer), que además guarda el usuario.
+DROP TRIGGER IF EXISTS trg_cot_historial;
 
 -- Regla de margen: no se puede ENVIAR con descuentos sobre el límite configurado
 CREATE TRIGGER IF NOT EXISTS trg_cot_limite_descuento
