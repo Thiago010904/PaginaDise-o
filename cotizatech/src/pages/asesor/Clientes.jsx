@@ -1,13 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Search, Mail } from 'lucide-react'
 import { useCotizaciones } from '../../context/CotizacionesContext.jsx'
-import { agruparClientes, fmtCOP, fmtFechaCorta } from '../../data/solicitudes.js'
+import { asesorApi } from '../../api/asesor.js'
+import { useApi } from '../../hooks/useApi.js'
+import { fmtCOP, fmtFechaCorta } from '../../utils/formato.js'
 
 export default function Clientes() {
-  const { solicitudes, avisar } = useCotizaciones()
+  const { avisar } = useCotizaciones()
   const [q, setQ] = useState('')
-  const texto = q.trim().toLowerCase()
-  const clientes = agruparClientes(solicitudes).filter((c) => !texto || `${c.nombre} ${c.nit} ${c.contacto} ${c.sector}`.toLowerCase().includes(texto))
+  const [busqueda, setBusqueda] = useState('')
+
+  // Espera 300 ms después de la última tecla antes de buscar en el back
+  useEffect(() => {
+    const t = setTimeout(() => setBusqueda(q.trim()), 300)
+    return () => clearTimeout(t)
+  }, [q])
+
+  // Resumen por empresa calculado en la base (vista v_clientes_resumen)
+  const { datos, cargando, error } = useApi(() => asesorApi.clientes(busqueda), [busqueda])
+  const clientes = datos?.items || []
 
   return (
     <>
@@ -18,7 +29,7 @@ export default function Clientes() {
         </div>
         <div className="flex h-9 w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 focus-within:border-brand sm:w-72">
           <Search size={14} className="text-slate-500" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar empresa, NIT, contacto..." className="w-full text-xs outline-none placeholder:text-slate-400" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar empresa o NIT..." className="w-full text-xs outline-none placeholder:text-slate-400" />
         </div>
       </div>
 
@@ -37,7 +48,7 @@ export default function Clientes() {
           </thead>
           <tbody>
             {clientes.map((c) => (
-              <tr key={c.nit} className="border-t border-slate-100">
+              <tr key={c.empresa_id} className="border-t border-slate-100">
                 <td className="px-5 py-4">
                   <p className="font-semibold">{c.nombre}</p>
                   <p className="text-[11px] text-slate-500">NIT: {c.nit}</p>
@@ -54,13 +65,17 @@ export default function Clientes() {
                 <td className="px-3 py-4 text-right font-semibold">{fmtCOP(c.valor)}</td>
                 <td className="whitespace-nowrap px-3 py-4">{fmtFechaCorta(c.ultima)}</td>
                 <td className="px-5 py-3 text-right">
-                  <button onClick={() => avisar(`Correo preparado para ${c.contacto}`)} className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-3 py-1.5 text-[11px] font-semibold text-slate-600 hover:bg-slate-200">
+                  <button onClick={() => avisar(`Correo preparado para ${c.contacto} (simulado)`)} className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-3 py-1.5 text-[11px] font-semibold text-slate-600 hover:bg-slate-200">
                     <Mail size={12} /> Contactar
                   </button>
                 </td>
               </tr>
             ))}
-            {!clientes.length && <tr><td colSpan={7} className="py-12 text-center text-slate-500">No encontramos clientes con esa búsqueda.</td></tr>}
+            {!clientes.length && (
+              <tr><td colSpan={7} className={`py-12 text-center ${error ? 'text-red-600' : 'text-slate-500'}`}>
+                {cargando ? 'Cargando...' : error ? error.message : 'No encontramos clientes con esa búsqueda.'}
+              </td></tr>
+            )}
           </tbody>
         </table>
       </div>
