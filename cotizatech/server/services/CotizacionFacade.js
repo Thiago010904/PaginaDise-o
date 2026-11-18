@@ -85,6 +85,9 @@ export class CotizacionFacade {
 
   // El comprador aprueba o rechaza (solo si el estado lo permite)
   decidir(folio, comprador, decision) {
+    // Primero se aplica el vencimiento (RN-03) fuera de la transacción de la decisión:
+    // si la decisión falla con 409, el paso a "Vencida" no debe deshacerse
+    this.#cargar(folio, { solicitanteId: comprador.id })
     transaccion(this.db, () => {
       const { c } = this.#cargar(folio, { solicitanteId: comprador.id })
       const nuevo = estadoDe(c.estado).decidir(decision)

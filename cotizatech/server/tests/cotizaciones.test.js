@@ -153,6 +153,8 @@ test('vencimientos: una enviada fuera de vigencia vence y ya no se puede aprobar
   const r = await c.post('/api/cotizaciones/COT-00125/decision', { decision: 'Aprobada' })
   assert.equal(r.status, 409)
   assert.match(r.body.error, /venció/)
+  // El rechazo (409) no debe deshacer el cambio a Vencida: se revisa la base directamente
+  assert.equal(db.prepare("SELECT estado FROM cotizaciones WHERE folio = 'COT-00125'").get().estado, 'Vencida')
   assert.equal((await c.get('/api/cotizaciones/COT-00125')).body.estado, 'Vencida')
   const h = db.prepare("SELECT estado_anterior, estado_nuevo FROM cotizacion_historial h JOIN cotizaciones c ON c.id=h.cotizacion_id WHERE c.folio='COT-00125' ORDER BY h.id").all()
   assert.deepEqual({ ...h.at(-1) }, { estado_anterior: 'Enviada', estado_nuevo: 'Vencida' })
