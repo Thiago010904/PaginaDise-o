@@ -1,19 +1,22 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useCotizaciones } from '../../context/CotizacionesContext.jsx'
-import { calcularSolicitud, fmtCOP, fmtFechaCorta } from '../../data/solicitudes.js'
+import { asesorApi } from '../../api/asesor.js'
+import { useApi } from '../../hooks/useApi.js'
+import { fmtCOP, fmtFechaCorta } from '../../utils/formato.js'
 import EstadoBadge from '../../components/EstadoBadge.jsx'
 
-const filtros = ['Todas', 'Borrador', 'Enviada', 'Aprobada', 'Rechazada']
+const TRABAJADAS = ['Borrador', 'Enviada', 'Aprobada', 'Rechazada', 'Vencida']
+const filtros = ['Todas', ...TRABAJADAS]
 
 // Cotizaciones que el asesor ya empezó a trabajar (todo lo que no está "Por Cotizar")
 export default function CotizacionesAsesor() {
-  const { solicitudes } = useCotizaciones()
   const navigate = useNavigate()
   const [filtro, setFiltro] = useState('Todas')
 
-  const trabajadas = solicitudes.filter((s) => s.estado !== 'Por Cotizar')
-  const lista = trabajadas.filter((s) => filtro === 'Todas' || s.estado === filtro)
+  const estado = filtro === 'Todas' ? TRABAJADAS.join(',') : filtro
+  const { datos, cargando, error } = useApi(() => asesorApi.solicitudes({ estado, por_pagina: 100 }), [estado])
+  const lista = datos?.items || []
+  const conteos = datos?.conteos || {}
   const btn = 'whitespace-nowrap rounded-md px-3 py-1.5 text-[11px] font-semibold'
 
   return (
@@ -30,7 +33,7 @@ export default function CotizacionesAsesor() {
 
       <div className="mt-6 flex flex-wrap gap-2">
         {filtros.map((f) => {
-          const n = trabajadas.filter((s) => f === 'Todas' || s.estado === f).length
+          const n = f === 'Todas' ? TRABAJADAS.reduce((a, e) => a + (conteos[e] || 0), 0) : conteos[f] || 0
           const activo = filtro === f
           return (
             <button key={f} onClick={() => setFiltro(f)}
@@ -56,23 +59,27 @@ export default function CotizacionesAsesor() {
           </thead>
           <tbody>
             {lista.map((s) => (
-              <tr key={s.id} className="border-t border-slate-100">
-                <td className="px-5 py-4"><Link to={`/asesor/cotizaciones/${s.id}`} className="font-semibold text-brand hover:underline">{s.id}</Link></td>
+              <tr key={s.folio} className="border-t border-slate-100">
+                <td className="px-5 py-4"><Link to={`/asesor/cotizaciones/${s.folio}`} className="font-semibold text-brand hover:underline">{s.folio}</Link></td>
                 <td className="px-3 py-4">
-                  <p className="font-semibold">{s.cliente.corto}</p>
-                  <p className="text-[11px] text-slate-500">NIT: {s.cliente.nit}</p>
+                  <p className="font-semibold">{s.cliente}</p>
+                  <p className="text-[11px] text-slate-500">NIT: {s.nit}</p>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4">{fmtFechaCorta(s.fecha)}</td>
-                <td className="px-3 py-4 text-right font-semibold">{fmtCOP(calcularSolicitud(s).total)}</td>
+                <td className="px-3 py-4 text-right font-semibold">{fmtCOP(s.total)}</td>
                 <td className="px-3 py-4"><EstadoBadge estado={s.estado} /></td>
                 <td className="px-5 py-3 text-right">
-                  <button onClick={() => navigate(`/asesor/cotizaciones/${s.id}`)} className={`${btn} ${s.estado === 'Borrador' ? 'border border-brand text-brand hover:bg-blue-50' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
-                    {s.estado === 'Borrador' ? 'Editar Borrador' : s.estado === 'Enviada' ? 'Abrir en editor' : 'Ver detalle'}
+                  <button onClick={() => navigate(`/asesor/cotizaciones/${s.folio}`)} className={`${btn} ${s.estado === 'Borrador' ? 'border border-brand text-brand hover:bg-blue-50' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                    {s.estado === 'Borrador' ? 'Editar Borrador' : 'Ver detalle'}
                   </button>
                 </td>
               </tr>
             ))}
-            {!lista.length && <tr><td colSpan={6} className="py-12 text-center text-slate-500">No hay cotizaciones en este estado.</td></tr>}
+            {!lista.length && (
+              <tr><td colSpan={6} className={`py-12 text-center ${error ? 'text-red-600' : 'text-slate-500'}`}>
+                {cargando ? 'Cargando...' : error ? error.message : 'No hay cotizaciones en este estado.'}
+              </td></tr>
+            )}
           </tbody>
         </table>
       </div>
